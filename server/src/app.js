@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser')
 const compression  = require('compression')
 const http         = require('http')
 const { Server }   = require('socket.io')
+const rateLimit    = require('express-rate-limit')
 
 const routes       = require('./routes')
 const errorHandler = require('./middleware/errorHandler.middleware')
@@ -55,6 +56,17 @@ app.use(compression())
 app.use(cookieParser())
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
+
+// Global Rate Limiting for all /api routes
+// This protects the server from DDoS attacks by limiting IP traffic
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 1000, // Limit each IP to 1000 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  message: { success: false, message: 'Too many requests from this IP, please try again after 15 minutes' }
+})
+app.use('/api', globalLimiter)
 
 // Request logging via Winston
 app.use(morgan('short', {

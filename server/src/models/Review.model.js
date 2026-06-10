@@ -9,7 +9,8 @@ const reviewSchema = new mongoose.Schema({
   title:           { type: String, trim: true, maxlength: 100 },
   text:            { type: String, trim: true, maxlength: 2000 },
   photos:          [{ type: String }],
-  upvotes:         { type: Number, default: 0 },
+  upvotes:         [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  reportedBy:      [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   isVerifiedVisit: { type: Boolean, default: false }
 }, { timestamps: true })
 
