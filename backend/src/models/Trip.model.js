@@ -56,6 +56,11 @@ const tripSchema = new mongoose.Schema({
   // Cached likes/saves arrays for O(1) checks
   likedBy:  [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   savedBy:  [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  collaborators: [{
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    role: { type: String, enum: ['editor', 'viewer'], default: 'editor' },
+    status: { type: String, enum: ['pending', 'accepted'], default: 'pending' }
+  }],
 }, { timestamps: true })
 
 tripSchema.index({ destination: 'text', tags: 'text' })

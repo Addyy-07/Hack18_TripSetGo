@@ -7,6 +7,7 @@ import { fetchMe } from '@/features/auth/authSlice'
 import { useSocket } from '@/hooks/useSocket'
 import { ToastContainer } from '@/components/common/Toast'
 import Loader from '@/components/common/Loader'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 
 // Global toast state — lifted here so any component can trigger toasts
 // via a custom event: window.dispatchEvent(new CustomEvent('toast', { detail: { type, message } }))
@@ -52,5 +53,10 @@ function AppContent() {
 }
 
 export default function App() {
-  return <AppContent />
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
+  return (
+    <GoogleOAuthProvider clientId={clientId}>
+      <AppContent />
+    </GoogleOAuthProvider>
+  )
 }

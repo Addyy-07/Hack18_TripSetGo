@@ -30,15 +30,58 @@ const io = new Server(server, {
 
 // Keep track of connected users { userId: socketId }
 const activeUsers = new Map()
+// Keep track of users inside each trip room { tripId: Map(socketId -> { userId, name, avatar }) }
+const tripRooms = new Map()
 
 io.on('connection', (socket) => {
   socket.on('join', ({ user_id }) => {
     if (user_id) activeUsers.set(user_id, socket.id)
   })
 
+  // Collaborative Room Join
+  socket.on('join_trip', ({ tripId, userId, name, avatar }) => {
+    socket.join(`trip_room:${tripId}`)
+    if (!tripRooms.has(tripId)) {
+      tripRooms.set(tripId, new Map())
+    }
+    tripRooms.get(tripId).set(socket.id, { userId, name, avatar })
+
+    // Broadcast updated presence list
+    const users = Array.from(tripRooms.get(tripId).values())
+    io.to(`trip_room:${tripId}`).emit('presence_change', { users })
+  })
+
+  // Collaborative Room Leave
+  socket.on('leave_trip', ({ tripId }) => {
+    socket.leave(`trip_room:${tripId}`)
+    if (tripRooms.has(tripId)) {
+      tripRooms.get(tripId).delete(socket.id)
+      if (tripRooms.get(tripId).size === 0) {
+        tripRooms.delete(tripId)
+      } else {
+        const users = Array.from(tripRooms.get(tripId).values())
+        io.to(`trip_room:${tripId}`).emit('presence_change', { users })
+      }
+    }
+  })
+
   socket.on('disconnect', () => {
+    // Clean active global users map
     for (const [userId, socketId] of activeUsers.entries()) {
       if (socketId === socket.id) activeUsers.delete(userId)
+    }
+
+    // Clean trip room presence
+    for (const [tripId, roomUsers] of tripRooms.entries()) {
+      if (roomUsers.has(socket.id)) {
+        roomUsers.delete(socket.id)
+        if (roomUsers.size === 0) {
+          tripRooms.delete(tripId)
+        } else {
+          const users = Array.from(roomUsers.values())
+          io.to(`trip_room:${tripId}`).emit('presence_change', { users })
+        }
+      }
     }
   })
 })
@@ -58,8 +101,13 @@ app.use(cors({
 }))
 app.use(compression())
 app.use(cookieParser())
+
+const { csrfProtection, setCsrfToken } = require('./middleware/csrf.middleware')
+app.use(setCsrfToken)
+
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
+app.use('/api', csrfProtection)
 
 // Global Rate Limiting for all /api routes
 // This protects the server from DDoS attacks by limiting IP traffic

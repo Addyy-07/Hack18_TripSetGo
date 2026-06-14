@@ -1,6 +1,7 @@
 // server/src/controllers/trip.controller.js
 const mongoose     = require('mongoose')
 const Trip         = require('../models/Trip.model')
+const User         = require('../models/User.model')
 const Subscription = require('../models/Subscription.model')
 const Notification = require('../models/Notification.model')
 const { generateTripPlan } = require('../services/gemini.service')
@@ -90,13 +91,17 @@ exports.getMyTrips = asyncHandler(async (req, res) => {
 // ── GET /api/v1/trips/:id ────────────────────────────────────────────────
 
 exports.getTrip = asyncHandler(async (req, res) => {
-  const trip = await Trip.findById(req.params.id).populate('userId', 'name avatar')
+  const trip = await Trip.findById(req.params.id)
+    .populate('userId', 'name avatar')
+    .populate('collaborators.userId', 'name email avatar')
   if (!trip) return notFound(res, 'Trip not found')
 
   // Route uses optionalAuth — req.user may be undefined (guest viewing a shared link)
   const userId = req.user?._id
   const isOwner = userId && trip.userId?._id?.equals(userId)
-  if (!trip.isPublic && !isOwner) {
+  const isCollaborator = userId && trip.collaborators.some(c => c.userId?._id?.equals(userId) && c.status === 'accepted')
+  
+  if (!trip.isPublic && !isOwner && !isCollaborator) {
     return userId ? forbidden(res) : unauthorized(res, 'This trip is private')
   }
 
@@ -110,12 +115,22 @@ exports.getTrip = asyncHandler(async (req, res) => {
 // ── PUT /api/v1/trips/:id — Update selections ───────────────────────────
 
 exports.updateTrip = asyncHandler(async (req, res) => {
-  const trip = await Trip.findOne({ _id: req.params.id, userId: req.user._id })
+  const trip = await Trip.findById(req.params.id)
   if (!trip) return notFound(res, 'Trip not found')
 
+  const isOwner = trip.userId.equals(req.user._id)
+  const isEditor = trip.collaborators.some(c => c.userId.equals(req.user._id) && c.status === 'accepted' && c.role === 'editor')
+
+  if (!isOwner && !isEditor) {
+    return forbidden(res, 'You do not have permission to edit this trip')
+  }
+
   if (req.body.selections) trip.selectedOptions = req.body.selections
-  if (req.body.isPublic !== undefined) trip.isPublic = req.body.isPublic
+  if (req.body.isPublic !== undefined && isOwner) trip.isPublic = req.body.isPublic
   await trip.save()
+
+  // Notify socket room
+  req.io.to(`trip_room:${trip._id}`).emit('itinerary_updated', { tripId: trip._id })
 
   success(res, trip)
 })
@@ -123,8 +138,13 @@ exports.updateTrip = asyncHandler(async (req, res) => {
 // ── DELETE /api/v1/trips/:id ─────────────────────────────────────────────
 
 exports.deleteTrip = asyncHandler(async (req, res) => {
-  const trip = await Trip.findOneAndDelete({ _id: req.params.id, userId: req.user._id })
+  const trip = await Trip.findById(req.params.id)
   if (!trip) return notFound(res, 'Trip not found')
+  if (!trip.userId.equals(req.user._id)) {
+    return forbidden(res, 'Only the trip owner can delete this trip')
+  }
+
+  await Trip.findByIdAndDelete(req.params.id)
   req.user.tripsCount = Math.max(0, (req.user.tripsCount || 0) - 1)
   await req.user.save()
   success(res, null, 'Trip deleted')
@@ -240,11 +260,20 @@ exports.shareTrip = asyncHandler(async (req, res) => {
 
 exports.saveItinerary = asyncHandler(async (req, res) => {
   const { itinerary } = req.body
-  const trip = await Trip.findOne({ _id: req.params.id, userId: req.user._id })
+  const trip = await Trip.findById(req.params.id)
   if (!trip) return notFound(res, 'Trip not found')
+
+  const isOwner = trip.userId.equals(req.user._id)
+  const isEditor = trip.collaborators.some(c => c.userId.equals(req.user._id) && c.status === 'accepted' && c.role === 'editor')
+  if (!isOwner && !isEditor) {
+    return forbidden(res, 'You do not have permission to edit this trip')
+  }
 
   trip.itinerary = itinerary
   await trip.save()
+
+  // Notify socket room
+  req.io.to(`trip_room:${trip._id}`).emit('itinerary_updated', { tripId: trip._id })
 
   success(res, trip, 'Itinerary saved successfully')
 })
@@ -252,8 +281,14 @@ exports.saveItinerary = asyncHandler(async (req, res) => {
 // ── POST /api/v1/trips/:id/itinerary/day — Add a day to itinerary ───────
 
 exports.addItineraryDay = asyncHandler(async (req, res) => {
-  const trip = await Trip.findOne({ _id: req.params.id, userId: req.user._id })
+  const trip = await Trip.findById(req.params.id)
   if (!trip) return notFound(res, 'Trip not found')
+
+  const isOwner = trip.userId.equals(req.user._id)
+  const isEditor = trip.collaborators.some(c => c.userId.equals(req.user._id) && c.status === 'accepted' && c.role === 'editor')
+  if (!isOwner && !isEditor) {
+    return forbidden(res, 'You do not have permission to edit this trip')
+  }
 
   const { day, date, activities } = req.body
 
@@ -265,14 +300,23 @@ exports.addItineraryDay = asyncHandler(async (req, res) => {
   trip.itinerary.sort((a, b) => a.day - b.day) // Keep sorted by day
   await trip.save()
 
+  // Notify socket room
+  req.io.to(`trip_room:${trip._id}`).emit('itinerary_updated', { tripId: trip._id })
+
   success(res, trip, `Day ${day} added to itinerary`)
 })
 
 // ── PUT /api/v1/trips/:id/itinerary/day/:day — Update a specific day ────
 
 exports.updateItineraryDay = asyncHandler(async (req, res) => {
-  const trip = await Trip.findOne({ _id: req.params.id, userId: req.user._id })
+  const trip = await Trip.findById(req.params.id)
   if (!trip) return notFound(res, 'Trip not found')
+
+  const isOwner = trip.userId.equals(req.user._id)
+  const isEditor = trip.collaborators.some(c => c.userId.equals(req.user._id) && c.status === 'accepted' && c.role === 'editor')
+  if (!isOwner && !isEditor) {
+    return forbidden(res, 'You do not have permission to edit this trip')
+  }
 
   const dayNum = parseInt(req.params.day, 10)
   const dayEntry = trip.itinerary.find(d => d.day === dayNum)
@@ -284,14 +328,23 @@ exports.updateItineraryDay = asyncHandler(async (req, res) => {
   trip.markModified('itinerary')
   await trip.save()
 
+  // Notify socket room
+  req.io.to(`trip_room:${trip._id}`).emit('itinerary_updated', { tripId: trip._id })
+
   success(res, trip, `Day ${dayNum} updated`)
 })
 
 // ── DELETE /api/v1/trips/:id/itinerary/day/:day — Remove a specific day ─
 
 exports.deleteItineraryDay = asyncHandler(async (req, res) => {
-  const trip = await Trip.findOne({ _id: req.params.id, userId: req.user._id })
+  const trip = await Trip.findById(req.params.id)
   if (!trip) return notFound(res, 'Trip not found')
+
+  const isOwner = trip.userId.equals(req.user._id)
+  const isEditor = trip.collaborators.some(c => c.userId.equals(req.user._id) && c.status === 'accepted' && c.role === 'editor')
+  if (!isOwner && !isEditor) {
+    return forbidden(res, 'You do not have permission to edit this trip')
+  }
 
   const dayNum = parseInt(req.params.day, 10)
   const index  = trip.itinerary.findIndex(d => d.day === dayNum)
@@ -300,5 +353,187 @@ exports.deleteItineraryDay = asyncHandler(async (req, res) => {
   trip.itinerary.splice(index, 1)
   await trip.save()
 
+  // Notify socket room
+  req.io.to(`trip_room:${trip._id}`).emit('itinerary_updated', { tripId: trip._id })
+
   success(res, trip, `Day ${dayNum} removed from itinerary`)
+})
+
+// ── Collaboration endpoints ─────────────────────────────────────────────
+
+exports.inviteCollaborator = asyncHandler(async (req, res) => {
+  const { email, role } = req.body
+  if (!email?.trim()) return badRequest(res, 'Email is required')
+
+  const trip = await Trip.findById(req.params.id)
+  if (!trip) return notFound(res, 'Trip not found')
+
+  // Only the trip owner can invite collaborators
+  if (!trip.userId.equals(req.user._id)) {
+    return forbidden(res, 'Only the trip owner can invite collaborators')
+  }
+
+  // Find user by email
+  const invitee = await User.findOne({ email: email.trim().toLowerCase() })
+  if (!invitee) return notFound(res, `User with email ${email} not found`)
+
+  // Check if trying to invite self
+  if (invitee._id.equals(req.user._id)) {
+    return badRequest(res, 'You cannot invite yourself as a collaborator')
+  }
+
+  // Check if already a collaborator
+  const exists = trip.collaborators.some(c => c.userId.equals(invitee._id))
+  if (exists) {
+    return badRequest(res, 'This user is already invited or a collaborator on this trip')
+  }
+
+  // Add collaborator
+  trip.collaborators.push({
+    userId: invitee._id,
+    role: role || 'editor',
+    status: 'pending'
+  })
+  await trip.save()
+
+  // Create notification for invitee
+  const notification = await Notification.create({
+    userId: invitee._id,
+    type: 'trip_invite',
+    message: `${req.user.name} invited you to collaborate on the trip to ${trip.destination}`,
+    actor: req.user._id,
+    meta: { tripId: trip._id }
+  })
+
+  // Emit real-time notification via Socket.io
+  const socketId = req.activeUsers.get(invitee._id.toString())
+  if (socketId) {
+    req.io.to(socketId).emit('notification', {
+      _id: notification._id,
+      userId: invitee._id,
+      type: 'trip_invite',
+      message: `${req.user.name} invited you to collaborate on the trip to ${trip.destination}`,
+      actor: { _id: req.user._id, name: req.user.name, avatar: req.user.avatar },
+      meta: { tripId: trip._id },
+      createdAt: notification.createdAt
+    })
+  }
+
+  // Populate and return updated collaborators
+  const updatedTrip = await Trip.findById(trip._id).populate('collaborators.userId', 'name email avatar')
+  success(res, updatedTrip.collaborators, 'Collaborator invited successfully')
+})
+
+exports.respondToInvitation = asyncHandler(async (req, res) => {
+  const { accept } = req.body
+  if (accept === undefined) return badRequest(res, 'accept (boolean) parameter is required')
+
+  const trip = await Trip.findById(req.params.id)
+  if (!trip) return notFound(res, 'Trip not found')
+
+  // Find user in collaborators list
+  const index = trip.collaborators.findIndex(c => c.userId.equals(req.user._id))
+  if (index === -1) return forbidden(res, 'You are not invited to collaborate on this trip')
+
+  const collaborator = trip.collaborators[index]
+  if (collaborator.status !== 'pending') {
+    return badRequest(res, 'You have already responded to this invitation')
+  }
+
+  if (accept) {
+    collaborator.status = 'accepted'
+  } else {
+    trip.collaborators.splice(index, 1)
+  }
+
+  await trip.save()
+
+  // Notify owner
+  const statusText = accept ? 'accepted' : 'declined'
+  const notification = await Notification.create({
+    userId: trip.userId,
+    type: 'system',
+    message: `${req.user.name} has ${statusText} your invitation to collaborate on the trip to ${trip.destination}`,
+    actor: req.user._id,
+    meta: { tripId: trip._id }
+  })
+
+  const ownerSocketId = req.activeUsers.get(trip.userId.toString())
+  if (ownerSocketId) {
+    req.io.to(ownerSocketId).emit('notification', {
+      _id: notification._id,
+      userId: trip.userId,
+      type: 'system',
+      message: `${req.user.name} has ${statusText} your invitation to collaborate on the trip to ${trip.destination}`,
+      actor: { _id: req.user._id, name: req.user.name, avatar: req.user.avatar },
+      meta: { tripId: trip._id },
+      createdAt: notification.createdAt
+    })
+  }
+
+  success(res, { status: collaborator.status }, `Invitation ${statusText}`)
+})
+
+exports.removeCollaborator = asyncHandler(async (req, res) => {
+  const { userId } = req.params
+  const trip = await Trip.findById(req.params.id)
+  if (!trip) return notFound(res, 'Trip not found')
+
+  const isOwner = trip.userId.equals(req.user._id)
+  const isSelf = req.user._id.equals(userId)
+
+  // Only the owner can remove someone, or a collaborator can remove/leave themselves
+  if (!isOwner && !isSelf) {
+    return forbidden(res, 'You do not have permission to remove this collaborator')
+  }
+
+  const index = trip.collaborators.findIndex(c => c.userId.equals(userId))
+  if (index === -1) return notFound(res, 'Collaborator not found on this trip')
+
+  trip.collaborators.splice(index, 1)
+  await trip.save()
+
+  // Notify the removed user if they were removed by owner
+  if (isOwner && !isSelf) {
+    const notification = await Notification.create({
+      userId: userId,
+      type: 'system',
+      message: `You were removed from collaborating on the trip to ${trip.destination}`,
+      actor: req.user._id,
+      meta: { tripId: trip._id }
+    })
+
+    const removeeSocketId = req.activeUsers.get(userId.toString())
+    if (removeeSocketId) {
+      req.io.to(removeeSocketId).emit('notification', {
+        _id: notification._id,
+        userId: userId,
+        type: 'system',
+        message: `You were removed from collaborating on the trip to ${trip.destination}`,
+        actor: { _id: req.user._id, name: req.user.name, avatar: req.user.avatar },
+        meta: { tripId: trip._id },
+        createdAt: notification.createdAt
+      })
+    }
+  }
+
+  success(res, null, 'Collaborator removed successfully')
+})
+
+exports.getSharedTrips = asyncHandler(async (req, res) => {
+  const trips = await Trip.find({
+    'collaborators.userId': req.user._id
+  })
+    .populate('userId', 'name avatar')
+    .populate('collaborators.userId', 'name email avatar')
+    .sort({ createdAt: -1 })
+    .lean()
+
+  const tripsWithFlags = trips.map(t => ({
+    ...t,
+    isLiked: t.likedBy?.some(id => id.equals(req.user._id)),
+    isSaved: t.savedBy?.some(id => id.equals(req.user._id)),
+  }))
+
+  success(res, tripsWithFlags)
 })
