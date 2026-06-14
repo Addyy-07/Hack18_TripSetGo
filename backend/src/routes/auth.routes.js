@@ -23,6 +23,8 @@ const otpLimiter = rateLimit({
   message: { success: false, message: 'Too many OTP requests, please try again later' }
 })
 
+const { authenticate } = require('../middleware/auth.middleware')
+
 router.post('/signup',          authLimiter, validate(signupSchema),        authCtrl.signup)
 router.post('/verify-otp',      otpLimiter,  validate(verifyOtpSchema),     authCtrl.verifyOTP)
 router.post('/login',           authLimiter, validate(loginSchema),         authCtrl.login)
@@ -31,5 +33,11 @@ router.post('/logout',          authCtrl.logout)
 router.post('/forgot-password', otpLimiter,  validate(forgotPasswordSchema), authCtrl.forgotPassword)
 router.post('/reset-password',  authLimiter, validate(resetPasswordSchema),  authCtrl.resetPassword)
 router.post('/google/token',    authLimiter, validate(googleTokenSchema),    authCtrl.googleToken)
+
+// MFA routes
+router.post('/mfa/setup',        authenticate, authCtrl.setupMFA)
+router.post('/mfa/enable',       authenticate, authCtrl.enableMFA)
+router.post('/mfa/disable',      authenticate, authCtrl.disableMFA)
+router.post('/mfa/verify-login', authLimiter,  authCtrl.verifyMfaLogin)
 
 module.exports = router

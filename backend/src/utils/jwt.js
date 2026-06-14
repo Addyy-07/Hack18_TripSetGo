@@ -3,7 +3,11 @@ const jwt  = require('jsonwebtoken')
 const { v4: uuidv4 } = require('uuid')
 
 const signAccessToken = (payload) =>
-  jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || '15m' })
+  jwt.sign(
+    { ...payload, jti: uuidv4() },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRES_IN || '15m' }
+  )
 
 const signRefreshToken = (payload) =>
   jwt.sign(

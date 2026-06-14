@@ -13,6 +13,11 @@ const userSchema = new mongoose.Schema({
   isEmailVerified: { type: Boolean, default: false },
   role:            { type: String, enum: ['user', 'admin'], default: 'user' },
   plan:            { type: String, enum: ['free', 'pro'], default: 'free' },
+  mfaSecret:       { type: String, default: null },
+  isMfaEnabled:    { type: Boolean, default: false },
+  mfaBackupCodes:  [{ type: String }],
+  loginAttempts:   { type: Number, default: 0 },
+  lockUntil:       { type: Date, default: null },
   followersCount:  { type: Number, default: 0 },
   followingCount:  { type: Number, default: 0 },
   tripsCount:      { type: Number, default: 0 },
@@ -26,10 +31,9 @@ const userSchema = new mongoose.Schema({
 }, { timestamps: true })
 
 // Hash password before save
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('passwordHash') || !this.passwordHash) return next()
+userSchema.pre('save', async function () {
+  if (!this.isModified('passwordHash') || !this.passwordHash) return
   this.passwordHash = await bcrypt.hash(this.passwordHash, 12)
-  next()
 })
 
 // Compare password
@@ -42,6 +46,10 @@ userSchema.methods.comparePassword = async function (plain) {
 userSchema.methods.toJSON = function () {
   const obj = this.toObject()
   delete obj.passwordHash
+  delete obj.mfaSecret
+  delete obj.mfaBackupCodes
+  delete obj.loginAttempts
+  delete obj.lockUntil
   delete obj.followers
   delete obj.following
   return obj
