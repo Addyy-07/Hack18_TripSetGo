@@ -11,6 +11,7 @@ const searchRoutes       = require('./search.routes')
 const reviewRoutes       = require('./review.routes')
 const plannerRoutes      = require('./planner.routes')
 const multiAgentRoutes   = require('./multiAgent.routes')
+const cacheRoutes        = require('./cache.routes')
 
 router.use('/auth',          authRoutes)
 router.use('/trips',         tripRoutes)
@@ -22,6 +23,7 @@ router.use('/search',        searchRoutes)
 router.use('/reviews',       reviewRoutes)
 router.use('/planner',       plannerRoutes)
 router.use('/multi-agent',   multiAgentRoutes)
+router.use('/cache',         cacheRoutes)
 
 // Health check
 router.get('/health', (req, res) => {

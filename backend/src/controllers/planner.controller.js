@@ -2,6 +2,7 @@
 const { generateDetailedPlan }  = require('../services/gemini.service')
 const fallback                   = require('../planning/fallbackPlanner')
 const Subscription               = require('../models/Subscription.model')
+const cacheService               = require('../services/cache.service')
 const { success, created, badRequest } = require('../utils/response')
 const asyncHandler               = require('../utils/asyncHandler')
 const logger                     = require('../utils/logger')
@@ -14,6 +15,12 @@ const logger                     = require('../utils/logger')
  *
  * Returns: full structured plan with itinerary, attractions,
  *          restaurants, cost breakdown, and packing suggestions.
+ *
+ * Caching strategy:
+ *   - Key: SHA-256 hash of (destination + budget + days + sorted interests)
+ *   - Namespace: "itinerary"
+ *   - TTL: 60 minutes
+ *   - POST body is used as the cache discriminator since this is not a GET route
  */
 exports.generatePlan = asyncHandler(async (req, res) => {
   const { destination, budget, days, interests } = req.body
@@ -33,8 +40,24 @@ exports.generatePlan = asyncHandler(async (req, res) => {
     destination: destination.trim(),
     budget:      Number(budget),
     days:        Number(days),
-    interests:   Array.isArray(interests) ? interests.slice(0, 10) : []
+    interests:   Array.isArray(interests) ? interests.slice(0, 10).sort() : []
   }
+
+  // --- AI Itinerary Cache Lookup ---
+  // Key is deterministic: same params always produce the same cache entry.
+  // interests are sorted so ["beach","food"] and ["food","beach"] share a key.
+  const cacheRaw = `${input.destination}|${input.budget}|${input.days}|${input.interests.join(',')}`
+  const cached   = await cacheService.getByNs('itinerary', cacheRaw)
+
+  if (cached) {
+    logger.info(`[Cache] HIT  itinerary — ${input.destination} ${input.days}d $${input.budget}`)
+    res.setHeader('X-Cache', 'HIT')
+    res.setHeader('X-Cache-Namespace', 'itinerary')
+    return created(res, { ...cached, fromCache: true }, 'Travel plan retrieved from cache')
+  }
+
+  res.setHeader('X-Cache', 'MISS')
+  res.setHeader('X-Cache-Namespace', 'itinerary')
 
   // --- Enforce Subscription Limit (if authenticated) ---
   if (req.user) {
@@ -66,6 +89,17 @@ exports.generatePlan = asyncHandler(async (req, res) => {
   }
 
   logger.info(`✅ Planner: Plan generated for "${input.destination}" (${usedFallback ? 'fallback' : 'Gemini'})`)
+
+  // --- Cache the generated plan ---
+  // Only cache Gemini-generated plans; fallback plans are cheap to regenerate.
+  if (!usedFallback) {
+    try {
+      await cacheService.set('itinerary', cacheRaw, { plan, usedFallback, destination: input.destination, days: input.days, budget: input.budget })
+      logger.info(`[Cache] SET  itinerary — ${input.destination} (TTL: ${cacheService.TTL.itinerary}s)`)
+    } catch (err) {
+      logger.warn(`[Cache] Failed to store itinerary: ${err.message}`)
+    }
+  }
 
   created(res, { plan, usedFallback, destination: input.destination, days: input.days, budget: input.budget }, 'Travel plan generated successfully')
 })

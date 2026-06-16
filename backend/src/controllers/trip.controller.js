@@ -6,6 +6,7 @@ const Subscription = require('../models/Subscription.model')
 const Notification = require('../models/Notification.model')
 const { generateTripPlan } = require('../services/gemini.service')
 const fallback     = require('../planning/fallbackPlanner')
+const cacheService = require('../services/cache.service')
 const { success, created, notFound, badRequest, forbidden, unauthorized } = require('../utils/response')
 const asyncHandler = require('../utils/asyncHandler')
 const logger       = require('../utils/logger')
@@ -64,6 +65,12 @@ exports.createTrip = asyncHandler(async (req, res) => {
   await req.user.save()
 
   logger.info(`✅ Trip created: ${destination} (${usedFallback ? 'fallback' : 'Gemini'}) for user ${req.user._id}`)
+
+  // Invalidate feed + trending caches — a new trip affects public discovery
+  cacheService.flushMany('destinations:feed', 'destinations:trending').catch((err) =>
+    logger.warn(`[Cache] Feed/trending invalidation failed: ${err.message}`)
+  )
+
   created(res, { plan: planData, tripId: trip._id, usedFallback }, 'Trip plan generated')
 })
 
@@ -147,6 +154,14 @@ exports.deleteTrip = asyncHandler(async (req, res) => {
   await Trip.findByIdAndDelete(req.params.id)
   req.user.tripsCount = Math.max(0, (req.user.tripsCount || 0) - 1)
   await req.user.save()
+
+  // Invalidate feed + trending caches if this was a public trip
+  if (trip.isPublic) {
+    cacheService.flushMany('destinations:feed', 'destinations:trending').catch((err) =>
+      logger.warn(`[Cache] Feed/trending invalidation on delete failed: ${err.message}`)
+    )
+  }
+
   success(res, null, 'Trip deleted')
 })
 
@@ -252,6 +267,13 @@ exports.shareTrip = asyncHandler(async (req, res) => {
 
   const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000'
   const shareUrl  = `${clientUrl}/trips/${trip._id}`
+
+  // Trip is now public — invalidate discovery caches
+  if (!trip.isPublic) {
+    cacheService.flushMany('destinations:feed', 'destinations:trending').catch((err) =>
+      logger.warn(`[Cache] Feed/trending invalidation on share failed: ${err.message}`)
+    )
+  }
 
   success(res, { shareUrl, isPublic: true }, 'Trip is now public and shareable')
 })
