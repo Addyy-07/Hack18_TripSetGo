@@ -20,10 +20,16 @@ const server = http.createServer(app)
 // and express-rate-limit key off the real client IP in production.
 app.set('trust proxy', 1)
 
+// Sanitize CLIENT_URL (remove trailing slash if present to avoid CORS preflight failures)
+let clientUrl = process.env.CLIENT_URL || 'http://localhost:3000'
+if (clientUrl.endsWith('/')) {
+  clientUrl = clientUrl.slice(0, -1)
+}
+
 // Socket.io setup for real-time notifications
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    origin: clientUrl,
     credentials: true,
   },
 })
@@ -96,7 +102,7 @@ app.use((req, res, next) => {
 // Middleware
 app.use(helmet())
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: clientUrl,
   credentials: true,
 }))
 app.use(compression())
