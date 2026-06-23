@@ -1,4 +1,4 @@
-// src/pages/Dashboard/Admin/Analytics.jsx
+﻿// src/pages/Dashboard/Admin/Analytics.jsx
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchAnalytics, selectAdmin } from '@/features/admin/adminSlice'
@@ -22,7 +22,7 @@ export default function AdminAnalytics() {
 
   if (error) {
     return (
-      <div className="card" style={{ padding: '2rem', textAlign: 'center', borderColor: '#ef4444' }}>
+      <div className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ padding: '2rem', textAlign: 'center', borderColor: '#ef4444' }}>
         <ShieldAlert size={48} color="#ef4444" style={{ margin: '0 auto 1rem' }} />
         <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>Access Denied</h3>
         <p style={{ color: 'var(--color-text-secondary)' }}>{error}</p>
@@ -47,17 +47,17 @@ export default function AdminAnalytics() {
   })
 
   return (
-    <div className="page-enter">
+    <div className="animate-fadeIn">
       {/* Title */}
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '1.875rem', fontWeight: 800, marginBottom: '0.25rem' }}>Admin <span className="gradient-text">Console</span></h1>
+        <h1 style={{ fontSize: '1.875rem', fontWeight: 800, marginBottom: '0.25rem' }}>Admin <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">Console</span></h1>
         <p style={{ color: 'var(--color-text-secondary)' }}>Platform analytics & operations control desk</p>
       </div>
 
       {/* Stats Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem', marginBottom: '2.5rem' }}>
         {/* Users Stats */}
-        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1.5rem' }}>
+        <div className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1.5rem' }}>
           <div style={{ padding: '0.75rem', borderRadius: 'var(--radius-md)', background: 'rgba(99, 102, 241, 0.1)', color: '#6366f1' }}>
             <Users size={24} />
           </div>
@@ -68,7 +68,7 @@ export default function AdminAnalytics() {
         </div>
 
         {/* Trips Stats */}
-        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1.5rem' }}>
+        <div className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1.5rem' }}>
           <div style={{ padding: '0.75rem', borderRadius: 'var(--radius-md)', background: 'rgba(6, 182, 212, 0.1)', color: '#06b6d4' }}>
             <Compass size={24} />
           </div>
@@ -79,7 +79,7 @@ export default function AdminAnalytics() {
         </div>
 
         {/* Destinations Stats */}
-        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1.5rem' }}>
+        <div className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1.5rem' }}>
           <div style={{ padding: '0.75rem', borderRadius: 'var(--radius-md)', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981' }}>
             <Compass size={24} />
           </div>
@@ -90,7 +90,7 @@ export default function AdminAnalytics() {
         </div>
 
         {/* Subscriptions Stats */}
-        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1.5rem' }}>
+        <div className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1.5rem' }}>
           <div style={{ padding: '0.75rem', borderRadius: 'var(--radius-md)', background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b' }}>
             <CreditCard size={24} />
           </div>
@@ -104,7 +104,7 @@ export default function AdminAnalytics() {
       {/* Main Trends & Popular Destinations */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
         {/* Trend Area Chart */}
-        <div className="card" style={{ padding: '1.5rem' }}>
+        <div className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ padding: '1.5rem' }}>
           <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1.5rem' }}>Platform Activity (Last 7 Days)</h3>
           <div style={{ width: '100%', height: 260 }}>
             <ResponsiveContainer>
@@ -131,7 +131,7 @@ export default function AdminAnalytics() {
         </div>
 
         {/* Popular Destinations Bar Chart */}
-        <div className="card" style={{ padding: '1.5rem' }}>
+        <div className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ padding: '1.5rem' }}>
           <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1.5rem' }}>Popular Searched Destinations</h3>
           {trends.popularDestinations.length === 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 260, color: 'var(--color-text-muted)' }}>
@@ -158,7 +158,7 @@ export default function AdminAnalytics() {
       </div>
 
       {/* Database Quick Distribution */}
-      <div className="card" style={{ padding: '1.5rem' }}>
+      <div className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ padding: '1.5rem' }}>
         <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1.5rem' }}>Inventory Distribution</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
           <div style={{ background: 'var(--color-bg-secondary)', padding: '1.25rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border)' }}>

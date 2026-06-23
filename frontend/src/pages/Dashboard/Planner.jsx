@@ -1,4 +1,4 @@
-// src/pages/Dashboard/Planner.jsx
+ // src/pages/Dashboard/Planner.jsx
 import { useState, useEffect, Fragment, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -21,6 +21,48 @@ import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
 import Loader from '@/components/common/Loader'
 import Modal from '@/components/common/Modal'
+
+/* ─── Tailwind Utility Classes ─── */
+const plannerGlassPanelClass = 'bg-[rgba(26,31,47,0.7)] backdrop-blur-[40px] border border-solid border-[rgba(255,255,255,0.08)] border-t-[rgba(255,255,255,0.12)] shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.05)]'
+const plannerSectionHeaderClass = 'flex items-center gap-2 mb-4 pb-2.5 border-b border-solid border-[rgba(255,255,255,0.05)] text-[0.72rem] font-bold uppercase tracking-wider font-sans'
+const plannerSectionNumClass = 'px-2 py-0.5 rounded-[5px] text-[0.7rem] font-extrabold tracking-wider'
+const plannerInputGroupClass = 'relative flex flex-col gap-1.5 w-full [&>label]:block [&>label]:text-[0.75rem] [&>label]:font-medium [&>label]:text-text-secondary [&>label]:mb-1.5 [&>label]:font-sans'
+const plannerInputClass = 'w-full bg-[rgba(255,255,255,0.04)] border border-solid border-[rgba(255,255,255,0.1)] rounded-lg text-text-primary font-sans text-sm py-2.5 pl-9 pr-3.5 outline-none transition-all duration-200 color-scheme-dark placeholder:text-text-muted focus:border-[rgba(14,165,233,0.5)] focus:shadow-[0_0_0_3px_rgba(14,165,233,0.1)]'
+const plannerInputIconClass = 'absolute left-3 top-1/2 -translate-y-1/2 text-text-muted flex items-center'
+const plannerChipLabelClass = 'text-[0.75rem] font-medium text-text-muted mb-2 font-sans'
+const plannerChipClass = (active, isSecondary) =>
+  `px-3.5 py-1.5 rounded-full text-[0.78rem] font-semibold border border-solid text-text-muted cursor-pointer transition-all duration-200 font-sans ` +
+  (active
+    ? isSecondary
+      ? 'bg-[rgba(20,184,166,0.15)] border-[rgba(20,184,166,0.5)] text-[#14B8A6] shadow-[0_0_10px_rgba(20,184,166,0.15)]'
+      : 'bg-[rgba(14,165,233,0.15)] border-[rgba(14,165,233,0.5)] text-[#0EA5E9] shadow-[0_0_10px_rgba(14,165,233,0.15)]'
+    : 'bg-[rgba(255,255,255,0.04)] border-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.08)] hover:text-text-primary')
+
+const plannerPrefChipClass = (active) =>
+  `p-1.5 rounded-lg text-[0.75rem] font-semibold border border-solid text-text-muted cursor-pointer transition-all duration-200 text-center font-sans ` +
+  (active
+    ? 'bg-gradient-to-r from-[rgba(14,165,233,0.18)] to-[rgba(139,92,246,0.18)] border-[rgba(14,165,233,0.4)] text-[#4ae6f0] shadow-[0_0_10px_rgba(14,165,233,0.1)]'
+    : 'bg-[rgba(255,255,255,0.03)] border-[rgba(255,255,255,0.07)] hover:bg-[rgba(139,92,246,0.08)] hover:border-[rgba(139,92,246,0.3)] hover:text-text-primary hover:-translate-y-px')
+
+const plannerGenerateBtnClass = 'w-full py-3.5 px-6 bg-gradient-to-r from-primary via-secondary to-accent bg-[length:200%_auto] border-none rounded-xl text-white font-bold text-[0.95rem] font-[\'Plus_Jakarta_Sans\',sans-serif] cursor-pointer flex items-center justify-center gap-2.5 transition-all duration-300 shadow-[0_4px_20px_rgba(14,165,233,0.3)] tracking-wider hover:not-disabled:bg-right hover:not-disabled:-translate-y-0.5 hover:not-disabled:shadow-[0_8px_28px_rgba(14,165,233,0.4)] active:not-disabled:translate-y-0 disabled:opacity-65 disabled:cursor-not-allowed'
+
+const planTabBtnClass = (active) =>
+  `inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[0.8rem] font-semibold border border-solid cursor-pointer transition-all duration-200 font-sans whitespace-nowrap ` +
+  (active
+    ? 'bg-gradient-to-r from-primary to-secondary border-transparent text-white shadow-[0_2px_10px_rgba(14,165,233,0.3)]'
+    : 'bg-[rgba(255,255,255,0.03)] border-[rgba(255,255,255,0.08)] text-text-muted hover:bg-[rgba(255,255,255,0.07)] hover:text-text-primary')
+
+const planOptionCardClass = (selected) =>
+  `border border-solid rounded-[14px] p-5 cursor-pointer transition-all duration-250 relative overflow-hidden ` +
+  (selected
+    ? 'border-[rgba(14,165,233,0.5)] bg-[rgba(14,165,233,0.07)] shadow-[0_0_20px_rgba(14,165,233,0.15),0_8px_24px_rgba(0,0,0,0.3)] after:content-[\'\'] after:absolute after:inset-0 after:bg-gradient-to-r after:from-[rgba(14,165,233,0.04)] after:to-transparent after:pointer-events-none'
+    : 'bg-[rgba(255,255,255,0.03)] border-[rgba(255,255,255,0.08)] hover:border-[rgba(255,255,255,0.15)] hover:-translate-y-[3px] hover:shadow-[0_8px_24px_rgba(0,0,0,0.3)] hover:bg-[rgba(255,255,255,0.05)]')
+
+const daySlotCardClass = (selected) =>
+  `border border-solid rounded-xl p-4 cursor-pointer transition-all duration-200 ` +
+  (selected
+    ? 'border-[rgba(139,92,246,0.4)] bg-[rgba(139,92,246,0.07)]'
+    : 'bg-[rgba(255,255,255,0.03)] border-[rgba(255,255,255,0.07)] hover:border-[rgba(255,255,255,0.12)] hover:-translate-y-0.5 hover:bg-[rgba(255,255,255,0.05)]')
 
 /* ─── Data constants ─── */
 const GROUP_TYPES = [
@@ -69,7 +111,7 @@ function BudgetBar({ liveBudget, totalBudget, status }) {
   const remaining = totalBudget - liveBudget
 
   return (
-    <div className="planner-glass-panel" style={{ padding: '1.25rem 1.5rem', borderRadius: 16, marginBottom: '1.5rem' }}>
+    <div className={plannerGlassPanelClass} style={{ padding: '1.25rem 1.5rem', borderRadius: 16, marginBottom: '1.5rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.875rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
           <div style={{
@@ -121,7 +163,7 @@ function TripForm({ form, onSubmit, onChange, loading }) {
   }
 
   return (
-    <div className="planner-glass-panel" style={{
+    <div className={plannerGlassPanelClass} style={{
       borderRadius: 20,
       padding: '2rem',
       display: 'flex',
@@ -154,18 +196,18 @@ function TripForm({ form, onSubmit, onChange, loading }) {
 
         {/* Section 01: Route & Timeline */}
         <div>
-          <div className="planner-section-header" style={{ color: '#0EA5E9' }}>
-            <span className="planner-section-num" style={{ background: 'rgba(14,165,233,0.12)', color: '#0EA5E9' }}>01</span>
+          <div className={plannerSectionHeaderClass} style={{ color: '#0EA5E9' }}>
+            <span className={plannerSectionNumClass} style={{ background: 'rgba(14,165,233,0.12)', color: '#0EA5E9' }}>01</span>
             <Navigation size={14} style={{ opacity: 0.7 }} />
             <span>Route &amp; Timeline</span>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '0.75rem' }}>
-            <div className="planner-input-group">
+            <div className={plannerInputGroupClass}>
               <label>Departure From</label>
               <div style={{ position: 'relative' }}>
-                <MapPin size={14} className="planner-input-icon" />
+                <MapPin size={14} className={plannerInputIconClass} />
                 <input
-                  className="planner-input"
+                  className={plannerInputClass}
                   placeholder="e.g. Mumbai"
                   required
                   value={form.source}
@@ -173,12 +215,12 @@ function TripForm({ form, onSubmit, onChange, loading }) {
                 />
               </div>
             </div>
-            <div className="planner-input-group">
+            <div className={plannerInputGroupClass}>
               <label>Destination To</label>
               <div style={{ position: 'relative' }}>
-                <Plane size={14} className="planner-input-icon" />
+                <Plane size={14} className={plannerInputIconClass} />
                 <input
-                  className="planner-input"
+                  className={plannerInputClass}
                   placeholder="e.g. Goa"
                   required
                   value={form.destination}
@@ -188,26 +230,26 @@ function TripForm({ form, onSubmit, onChange, loading }) {
             </div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-            <div className="planner-input-group">
+            <div className={plannerInputGroupClass}>
               <label>Start Date</label>
               <div style={{ position: 'relative' }}>
-                <CalendarDays size={14} className="planner-input-icon" />
+                <CalendarDays size={14} className={plannerInputIconClass} />
                 <input
                   type="date"
-                  className="planner-input"
+                  className={plannerInputClass}
                   required
                   value={form.startDate}
                   onChange={e => onChange({ startDate: e.target.value })}
                 />
               </div>
             </div>
-            <div className="planner-input-group">
+            <div className={plannerInputGroupClass}>
               <label>End Date</label>
               <div style={{ position: 'relative' }}>
-                <CalendarDays size={14} className="planner-input-icon" />
+                <CalendarDays size={14} className={plannerInputIconClass} />
                 <input
                   type="date"
-                  className="planner-input"
+                  className={plannerInputClass}
                   required
                   value={form.endDate}
                   onChange={e => onChange({ endDate: e.target.value })}
@@ -219,19 +261,19 @@ function TripForm({ form, onSubmit, onChange, loading }) {
 
         {/* Section 02: Budget & Travelers */}
         <div>
-          <div className="planner-section-header" style={{ color: '#14B8A6' }}>
-            <span className="planner-section-num" style={{ background: 'rgba(20,184,166,0.12)', color: '#14B8A6' }}>02</span>
+          <div className={plannerSectionHeaderClass} style={{ color: '#14B8A6' }}>
+            <span className={plannerSectionNumClass} style={{ background: 'rgba(20,184,166,0.12)', color: '#14B8A6' }}>02</span>
             <DollarSign size={14} style={{ opacity: 0.7 }} />
             <span>Budget &amp; Travelers</span>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
-            <div className="planner-input-group">
+            <div className={plannerInputGroupClass}>
               <label>Budget Limit (₹)</label>
               <div style={{ position: 'relative' }}>
-                <span className="planner-input-icon" style={{ fontWeight: 700, fontSize: '0.85rem', fontFamily: 'Inter' }}>₹</span>
+                <span className={plannerInputIconClass} style={{ fontWeight: 700, fontSize: '0.85rem', fontFamily: 'Inter' }}>₹</span>
                 <input
                   type="number"
-                  className="planner-input"
+                  className={plannerInputClass}
                   placeholder="50,000"
                   required
                   value={form.budget}
@@ -239,13 +281,13 @@ function TripForm({ form, onSubmit, onChange, loading }) {
                 />
               </div>
             </div>
-            <div className="planner-input-group">
+            <div className={plannerInputGroupClass}>
               <label>Number of Travelers</label>
               <div style={{ position: 'relative' }}>
-                <Users size={14} className="planner-input-icon" />
+                <Users size={14} className={plannerInputIconClass} />
                 <input
                   type="number"
-                  className="planner-input"
+                  className={plannerInputClass}
                   min={1}
                   max={30}
                   required
@@ -257,7 +299,7 @@ function TripForm({ form, onSubmit, onChange, loading }) {
           </div>
 
           <div style={{ marginBottom: '1rem' }}>
-            <p className="planner-chip-label">Companion Type</p>
+            <p className={plannerChipLabelClass}>Companion Type</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
               {GROUP_TYPES.map(g => {
                 const active = form.groupType === g.value
@@ -266,7 +308,7 @@ function TripForm({ form, onSubmit, onChange, loading }) {
                     key={g.value}
                     type="button"
                     onClick={() => onChange({ groupType: g.value })}
-                    className={`planner-chip ${active ? 'planner-chip-active-primary' : ''}`}
+                    className={plannerChipClass(active, false)}
                   >
                     {g.label}
                   </button>
@@ -276,7 +318,7 @@ function TripForm({ form, onSubmit, onChange, loading }) {
           </div>
 
           <div>
-            <p className="planner-chip-label">Travel Pace</p>
+            <p className={plannerChipLabelClass}>Travel Pace</p>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
               {PACE_OPTIONS.map(p => {
                 const active = (form.pace || 'balanced') === p.value
@@ -285,7 +327,7 @@ function TripForm({ form, onSubmit, onChange, loading }) {
                     key={p.value}
                     type="button"
                     onClick={() => onChange({ pace: p.value })}
-                    className={`planner-chip ${active ? 'planner-chip-active-secondary' : ''}`}
+                    className={plannerChipClass(active, true)}
                   >
                     {p.label}
                   </button>
@@ -297,8 +339,8 @@ function TripForm({ form, onSubmit, onChange, loading }) {
 
         {/* Section 03: Experience Preferences */}
         <div>
-          <div className="planner-section-header" style={{ color: '#8B5CF6' }}>
-            <span className="planner-section-num" style={{ background: 'rgba(139,92,246,0.12)', color: '#8B5CF6' }}>03</span>
+          <div className={plannerSectionHeaderClass} style={{ color: '#8B5CF6' }}>
+            <span className={plannerSectionNumClass} style={{ background: 'rgba(139,92,246,0.12)', color: '#8B5CF6' }}>03</span>
             <Sparkles size={14} style={{ opacity: 0.7 }} />
             <span>Experience Preferences</span>
           </div>
@@ -310,7 +352,7 @@ function TripForm({ form, onSubmit, onChange, loading }) {
                   key={p.value}
                   type="button"
                   onClick={() => togglePref(p.value)}
-                  className={`planner-pref-chip ${active ? 'planner-pref-chip-active' : ''}`}
+                  className={plannerPrefChipClass(active)}
                 >
                   {p.label}
                 </button>
@@ -323,7 +365,7 @@ function TripForm({ form, onSubmit, onChange, loading }) {
         <button
           type="submit"
           disabled={loading}
-          className="planner-generate-btn"
+          className={plannerGenerateBtnClass}
         >
           {loading ? (
             <span style={{
@@ -454,7 +496,7 @@ function TripAssistant() {
   ]
 
   return (
-    <div className="planner-glass-panel" style={{
+    <div className={plannerGlassPanelClass} style={{
       borderRadius: 20,
       display: 'flex',
       flexDirection: 'column',
@@ -793,237 +835,7 @@ export default function Planner() {
 
   return (
     <div className="page-enter">
-      {/* ── Style block ── */}
-      <style>{`
-        .planner-glass-panel {
-          background: rgba(26, 31, 47, 0.7);
-          backdrop-filter: blur(40px);
-          -webkit-backdrop-filter: blur(40px);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-top: 1px solid rgba(255, 255, 255, 0.12);
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.05);
-        }
-        .planner-section-header {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          margin-bottom: 1rem;
-          padding-bottom: 0.625rem;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-          font-size: 0.72rem;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
-          font-family: 'Inter', sans-serif;
-        }
-        .planner-section-num {
-          padding: 0.15rem 0.5rem;
-          border-radius: 5px;
-          font-size: 0.7rem;
-          font-weight: 800;
-          letter-spacing: 0.05em;
-        }
-        .planner-input-group label {
-          display: block;
-          font-size: 0.75rem;
-          font-weight: 500;
-          color: var(--color-text-muted);
-          margin-bottom: 0.375rem;
-          font-family: 'Inter', sans-serif;
-        }
-        .planner-input {
-          width: 100%;
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 10px;
-          color: var(--color-text-primary);
-          font-family: 'Inter', sans-serif;
-          font-size: 0.875rem;
-          padding: 0.625rem 0.875rem 0.625rem 2.25rem;
-          outline: none;
-          transition: border-color 0.2s, box-shadow 0.2s;
-          color-scheme: dark;
-        }
-        .planner-input::placeholder { color: var(--color-text-muted); }
-        .planner-input:focus {
-          border-color: rgba(14, 165, 233, 0.5);
-          box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
-        }
-        .planner-input-icon {
-          position: absolute;
-          left: 0.75rem;
-          top: 50%;
-          transform: translateY(-50%);
-          color: var(--color-text-muted);
-          display: flex;
-          align-items: center;
-        }
-        .planner-chip-label {
-          font-size: 0.75rem;
-          font-weight: 500;
-          color: var(--color-text-muted);
-          margin-bottom: 0.5rem;
-          font-family: 'Inter', sans-serif;
-        }
-        .planner-chip {
-          padding: 0.35rem 0.875rem;
-          border-radius: 99px;
-          font-size: 0.78rem;
-          font-weight: 600;
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          color: var(--color-text-muted);
-          cursor: pointer;
-          transition: all 0.2s;
-          font-family: 'Inter', sans-serif;
-        }
-        .planner-chip:hover {
-          background: rgba(255,255,255,0.08);
-          color: var(--color-text-primary);
-        }
-        .planner-chip-active-primary {
-          background: rgba(14, 165, 233, 0.15) !important;
-          border-color: rgba(14, 165, 233, 0.5) !important;
-          color: #0EA5E9 !important;
-          box-shadow: 0 0 10px rgba(14, 165, 233, 0.15);
-        }
-        .planner-chip-active-secondary {
-          background: rgba(20, 184, 166, 0.15) !important;
-          border-color: rgba(20, 184, 166, 0.5) !important;
-          color: #14B8A6 !important;
-          box-shadow: 0 0 10px rgba(20, 184, 166, 0.15);
-        }
-        .planner-pref-chip {
-          padding: 0.4rem 0.5rem;
-          border-radius: 10px;
-          font-size: 0.75rem;
-          font-weight: 600;
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.07);
-          color: var(--color-text-muted);
-          cursor: pointer;
-          transition: all 0.2s;
-          text-align: center;
-          font-family: 'Inter', sans-serif;
-        }
-        .planner-pref-chip:hover {
-          background: rgba(139, 92, 246, 0.08);
-          border-color: rgba(139, 92, 246, 0.3);
-          color: var(--color-text-primary);
-          transform: translateY(-1px);
-        }
-        .planner-pref-chip-active {
-          background: linear-gradient(135deg, rgba(14,165,233,0.18), rgba(139,92,246,0.18)) !important;
-          border-color: rgba(14, 165, 233, 0.4) !important;
-          color: #4ae6f0 !important;
-          box-shadow: 0 0 10px rgba(14,165,233,0.1);
-        }
-        .planner-generate-btn {
-          width: 100%;
-          padding: 0.875rem 1.5rem;
-          background: linear-gradient(135deg, #0EA5E9 0%, #14B8A6 50%, #8B5CF6 100%);
-          background-size: 200% auto;
-          border: none;
-          border-radius: 12px;
-          color: white;
-          font-weight: 700;
-          font-size: 0.95rem;
-          font-family: 'Plus Jakarta Sans', sans-serif;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.625rem;
-          transition: all 0.3s;
-          box-shadow: 0 4px 20px rgba(14,165,233,0.3);
-          letter-spacing: 0.01em;
-        }
-        .planner-generate-btn:hover:not(:disabled) {
-          background-position: right center;
-          transform: translateY(-2px);
-          box-shadow: 0 8px 28px rgba(14,165,233,0.4);
-        }
-        .planner-generate-btn:active:not(:disabled) { transform: translateY(0); }
-        .planner-generate-btn:disabled {
-          opacity: 0.65;
-          cursor: not-allowed;
-        }
-        .plan-tab-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.375rem;
-          padding: 0.4rem 0.875rem;
-          border-radius: 99px;
-          font-size: 0.8rem;
-          font-weight: 600;
-          border: 1px solid rgba(255,255,255,0.08);
-          cursor: pointer;
-          transition: all 0.2s;
-          font-family: 'Inter', sans-serif;
-          white-space: nowrap;
-        }
-        .plan-tab-btn-inactive {
-          background: rgba(255,255,255,0.03);
-          color: var(--color-text-muted);
-        }
-        .plan-tab-btn-inactive:hover {
-          background: rgba(255,255,255,0.07);
-          color: var(--color-text-primary);
-        }
-        .plan-tab-btn-active {
-          background: linear-gradient(135deg, #0EA5E9, #14B8A6);
-          border-color: transparent;
-          color: white;
-          box-shadow: 0 2px 10px rgba(14,165,233,0.3);
-        }
-        .plan-option-card {
-          background: rgba(255,255,255,0.03);
-          border: 1px solid rgba(255,255,255,0.08);
-          border-radius: 14px;
-          padding: 1.25rem;
-          cursor: pointer;
-          transition: all 0.25s;
-          position: relative;
-          overflow: hidden;
-        }
-        .plan-option-card:hover {
-          border-color: rgba(255,255,255,0.15);
-          transform: translateY(-3px);
-          box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-          background: rgba(255,255,255,0.05);
-        }
-        .plan-option-card-selected {
-          border-color: rgba(14,165,233,0.5) !important;
-          background: rgba(14,165,233,0.07) !important;
-          box-shadow: 0 0 20px rgba(14,165,233,0.15), 0 8px 24px rgba(0,0,0,0.3) !important;
-        }
-        .plan-option-card-selected::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, rgba(14,165,233,0.04) 0%, transparent 60%);
-          pointer-events: none;
-        }
-        .day-slot-card {
-          background: rgba(255,255,255,0.03);
-          border: 1px solid rgba(255,255,255,0.07);
-          border-radius: 12px;
-          padding: 1rem;
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-        .day-slot-card:hover {
-          border-color: rgba(255,255,255,0.12);
-          transform: translateY(-2px);
-          background: rgba(255,255,255,0.05);
-        }
-        .day-slot-card-selected {
-          border-color: rgba(139,92,246,0.4) !important;
-          background: rgba(139,92,246,0.07) !important;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-      `}</style>
+
 
       {/* Page header */}
       <div style={{
@@ -1036,7 +848,7 @@ export default function Planner() {
             fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.375rem',
             fontFamily: 'Plus Jakarta Sans, sans-serif',
           }}>
-            AI Trip <span className="gradient-text">Planner</span>
+            AI Trip <span className="bg-gradient-primary bg-clip-text text-transparent">Planner</span>
           </h1>
           <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
             Describe your dream trip — Gemini crafts your perfect itinerary
@@ -1118,7 +930,7 @@ export default function Planner() {
             <BudgetBar liveBudget={liveBudget} totalBudget={Number(form.budget)} status={status} />
 
             {/* Trip Meta */}
-            <div className="planner-glass-panel" style={{
+            <div className={plannerGlassPanelClass} style={{
               padding: '1rem 1.5rem', borderRadius: 14,
               marginBottom: '1.5rem',
               display: 'flex', gap: '2rem', flexWrap: 'wrap', alignItems: 'center',
@@ -1145,7 +957,7 @@ export default function Planner() {
                 <button
                   key={t.id}
                   onClick={() => dispatch(setActiveTab(t.id))}
-                  className={`plan-tab-btn ${activeTab === t.id ? 'plan-tab-btn-active' : 'plan-tab-btn-inactive'}`}
+                  className={planTabBtnClass(activeTab === t.id)}
                 >
                   {t.icon} {t.label}
                 </button>
@@ -1162,7 +974,7 @@ export default function Planner() {
                       const selected = selections.transport?.mode === t.mode
                       return (
                         <div key={i} onClick={() => dispatch(selectTransport(t))}
-                          className={`plan-option-card ${selected ? 'plan-option-card-selected' : ''}`}
+                          className={planOptionCardClass(selected)}
                         >
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.875rem' }}>
                             <div style={{
@@ -1304,7 +1116,7 @@ export default function Planner() {
                     {plan.itinerary.map((day, i) => (
                       <button key={i}
                         onClick={() => dispatch(setActiveDay(i))}
-                        className={`plan-tab-btn ${activeDay === i ? 'plan-tab-btn-active' : 'plan-tab-btn-inactive'}`}
+                        className={planTabBtnClass(activeDay === i)}
                       >
                         Day {day.day}{lockedDays.includes(i) ? ' 🔒' : ''}
                       </button>
@@ -1318,7 +1130,7 @@ export default function Planner() {
                     return (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         {/* Day toolbar */}
-                        <div className="planner-glass-panel" style={{ padding: '1rem 1.25rem', borderRadius: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
+                        <div className={plannerGlassPanelClass} style={{ padding: '1rem 1.25rem', borderRadius: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
                           <div>
                             {day.theme && <p style={{ fontWeight: 700, fontSize: '0.95rem', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>{day.theme}</p>}
                             <p style={{ color: 'var(--color-text-muted)', fontSize: '0.78rem' }}>
@@ -1366,7 +1178,7 @@ export default function Planner() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', opacity: isRegen ? 0.5 : 1, pointerEvents: isRegen ? 'none' : 'auto', transition: 'opacity 0.2s' }}>
                           {['morning', 'afternoon', 'evening'].map(slot => (
                             day[slot]?.activities && (
-                              <div key={slot} className="planner-glass-panel" style={{ borderRadius: 14, padding: '1.25rem' }}>
+                              <div key={slot} className={plannerGlassPanelClass} style={{ borderRadius: 14, padding: '1.25rem' }}>
                                 <p style={{ fontWeight: 700, fontSize: '0.875rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', textTransform: 'capitalize', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
                                   {slot === 'morning' ? <Sunrise size={16} style={{ color: '#f59e0b' }} /> : slot === 'afternoon' ? <Sun size={16} style={{ color: '#fbbf24' }} /> : <Moon size={16} style={{ color: '#8B5CF6' }} />}
                                   {slot}
@@ -1377,7 +1189,7 @@ export default function Planner() {
                                     return (
                                       <div key={j}
                                         onClick={() => dispatch(toggleActivity({ day: activeDay, slot, activity: act }))}
-                                        className={`day-slot-card ${isSelected ? 'day-slot-card-selected' : ''}`}
+                                        className={daySlotCardClass(isSelected)}
                                       >
                                         <p style={{ fontWeight: 600, fontSize: '0.875rem', marginBottom: '0.375rem' }}>{act.name}</p>
                                         <p style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem' }}>
@@ -1401,7 +1213,7 @@ export default function Planner() {
               {activeTab === 'essentials' && (
                 <motion.div key="essentials" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
                   {plan.weather && (
-                    <div className="planner-glass-panel" style={{ borderRadius: 14, padding: '1.25rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+                    <div className={plannerGlassPanelClass} style={{ borderRadius: 14, padding: '1.25rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
                       <div style={{ fontSize: 40 }}>🌤️</div>
                       <div>
                         <p style={{ fontWeight: 700, marginBottom: '0.25rem', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
@@ -1413,7 +1225,7 @@ export default function Planner() {
                     </div>
                   )}
                   {plan.packing_list?.length > 0 ? (
-                    <div className="planner-glass-panel" style={{ borderRadius: 14, padding: '1.25rem' }}>
+                    <div className={plannerGlassPanelClass} style={{ borderRadius: 14, padding: '1.25rem' }}>
                       <p style={{ fontWeight: 700, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
                         <Package size={16} style={{ color: '#0EA5E9' }} /> Packing List
                       </p>
@@ -1438,7 +1250,7 @@ export default function Planner() {
                 <motion.div key="suggestions" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
                     {plan.ai_suggestions.map((s, i) => (
-                      <div key={i} className="planner-glass-panel" style={{ borderRadius: 14, padding: '1.25rem', display: 'flex', gap: '1.25rem', alignItems: 'flex-start' }}>
+                      <div key={i} className={plannerGlassPanelClass} style={{ borderRadius: 14, padding: '1.25rem', display: 'flex', gap: '1.25rem', alignItems: 'flex-start' }}>
                         <div style={{
                           width: 44, height: 44, borderRadius: 10, flexShrink: 0,
                           background: 'rgba(139,92,246,0.1)',
@@ -1461,7 +1273,7 @@ export default function Planner() {
               {activeTab === 'drafts' && (
                 <motion.div key="drafts" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
                   {/* Save panel */}
-                  <div className="planner-glass-panel" style={{ padding: '1.125rem 1.5rem', borderRadius: 14, marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                  <div className={plannerGlassPanelClass} style={{ padding: '1.125rem 1.5rem', borderRadius: 14, marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                     <div>
                       <p style={{ fontWeight: 700, fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Save current version as draft</p>
                       <p style={{ color: 'var(--color-text-muted)', fontSize: '0.78rem', marginTop: 2 }}>
@@ -1502,7 +1314,7 @@ export default function Planner() {
                           const s = draftSummary(d)
                           const checked = compareIds.includes(d._id)
                           return (
-                            <div key={d._id} className="planner-glass-panel" style={{ borderRadius: 14, padding: '1.25rem', borderColor: checked ? 'rgba(14,165,233,0.4)' : undefined }}>
+                            <div key={d._id} className={plannerGlassPanelClass} style={{ borderRadius: 14, padding: '1.25rem', borderColor: checked ? 'rgba(14,165,233,0.4)' : undefined }}>
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.625rem' }}>
                                 <p style={{ fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>{d.name}</p>
                                 <span style={{ fontWeight: 800, color: '#0EA5E9', flexShrink: 0, marginLeft: '0.5rem' }}>{inr(s.total)}</span>
@@ -1555,7 +1367,7 @@ export default function Planner() {
                           ['Activities', sa.activities, sb.activities],
                         ]
                         return (
-                          <div className="planner-glass-panel" style={{ borderRadius: 14, padding: '1.5rem', marginTop: '1.5rem' }}>
+                          <div className={plannerGlassPanelClass} style={{ borderRadius: 14, padding: '1.5rem', marginTop: '1.5rem' }}>
                             <h3 style={{ fontWeight: 700, marginBottom: '1.25rem', fontFamily: 'Plus Jakarta Sans, sans-serif', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                               <Layers size={16} style={{ color: '#0EA5E9' }} /> Draft Comparison
                             </h3>

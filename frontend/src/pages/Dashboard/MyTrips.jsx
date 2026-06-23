@@ -8,6 +8,7 @@ import { fetchMyTrips, deleteTrip, likeTrip, cloneTrip, shareTrip, selectTrips, 
 import { selectUser } from '@/features/auth/authSlice'
 import api from '@/services/api'
 import { SkeletonCard } from '@/components/common/Loader'
+import Button from '@/components/common/Button'
 import { getDestinationImage } from './Discover'
 
 export default function MyTrips() {
@@ -104,7 +105,7 @@ export default function MyTrips() {
 
           return (
             <motion.div key={trip._id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}
-              className="card card-hover" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative', padding: 0, overflow: 'hidden' }}>
+              className="bg-bg-card border border-border rounded-2xl p-6 transition-all duration-250 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] hover:border-border-hover hover:-translate-y-1 hover:shadow-glow-strong hover:bg-[rgba(14,21,41,0.9)] cursor-pointer" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative', padding: 0, overflow: 'hidden' }}>
               
               <div>
                 {/* Destination Photo Header */}
@@ -158,41 +159,41 @@ export default function MyTrips() {
               {/* Action Banner for Pending Invitation */}
               {isPending ? (
                 <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem', paddingTop: '0.875rem', borderTop: '1px solid var(--color-border)' }}>
-                  <button onClick={() => handleInvitation(trip._id, true)} className="btn btn-primary btn-sm" style={{ flex: 1, gap: '0.25rem' }}>
+                  <Button onClick={() => handleInvitation(trip._id, true)} variant="primary" size="sm" style={{ flex: 1, gap: '0.25rem' }}>
                     <Check size={14} /> Accept
-                  </button>
-                  <button onClick={() => handleInvitation(trip._id, false)} className="btn btn-secondary btn-sm" style={{ flex: 1, gap: '0.25rem' }}>
+                  </Button>
+                  <Button onClick={() => handleInvitation(trip._id, false)} variant="secondary" size="sm" style={{ flex: 1, gap: '0.25rem' }}>
                     <X size={14} /> Decline
-                  </button>
+                  </Button>
                 </div>
               ) : (
                 <div style={{ display: 'flex', gap: '0.5rem', paddingTop: '0.875rem', borderTop: '1px solid var(--color-border)', marginTop: 'auto' }}>
-                  <button onClick={() => dispatch(likeTrip(trip._id))} className="btn btn-ghost btn-sm" style={{ color: trip.isLiked ? '#f87171' : undefined }}>
+                  <Button onClick={() => dispatch(likeTrip(trip._id))} variant="ghost" size="sm" style={{ color: trip.isLiked ? '#f87171' : undefined }}>
                     <Heart size={14} fill={trip.isLiked ? 'currentColor' : 'none'} /> {trip.likesCount || 0}
-                  </button>
+                  </Button>
                   
                   {isOwned ? (
                     <>
-                      <button onClick={() => dispatch(cloneTrip(trip._id))} className="btn btn-ghost btn-sm" title="Clone trip">
+                      <Button onClick={() => dispatch(cloneTrip(trip._id))} variant="ghost" size="sm" title="Clone trip">
                         <Copy size={14} />
-                      </button>
-                      <button onClick={() => handleShare(trip._id)} disabled={sharing === trip._id} className="btn btn-ghost btn-sm" title="Copy share link">
+                      </Button>
+                      <Button onClick={() => handleShare(trip._id)} disabled={sharing === trip._id} variant="ghost" size="sm" title="Copy share link">
                         <Share2 size={14} />{sharing === trip._id ? ' …' : ''}
-                      </button>
+                      </Button>
                       <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.375rem', alignItems: 'center' }}>
                         {confirmDelete === trip._id ? (
                           <>
-                            <button onClick={() => { dispatch(deleteTrip(trip._id)); setConfirmDelete(null) }} className="btn btn-danger btn-sm" style={{ fontSize: '0.75rem', padding: '0.25rem 0.625rem' }}>
+                            <Button onClick={() => { dispatch(deleteTrip(trip._id)); setConfirmDelete(null) }} variant="danger" size="sm" style={{ fontSize: '0.75rem', padding: '0.25rem 0.625rem' }}>
                               Delete
-                            </button>
-                            <button onClick={() => setConfirmDelete(null)} className="btn btn-ghost btn-sm" style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem' }}>
+                            </Button>
+                            <Button onClick={() => setConfirmDelete(null)} variant="ghost" size="sm" style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem' }}>
                               Cancel
-                            </button>
+                            </Button>
                           </>
                         ) : (
-                          <button onClick={() => setConfirmDelete(trip._id)} className="btn btn-ghost btn-sm" style={{ color: 'var(--color-accent-red)' }} title="Delete trip">
+                          <Button onClick={() => setConfirmDelete(trip._id)} variant="ghost" size="sm" style={{ color: 'var(--color-accent-red)' }} title="Delete trip">
                             <Trash2 size={14} />
-                          </button>
+                          </Button>
                         )}
                       </div>
                     </>
@@ -200,17 +201,17 @@ export default function MyTrips() {
                     <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.375rem', alignItems: 'center' }}>
                       {confirmLeave === trip._id ? (
                         <>
-                          <button onClick={() => handleLeaveTrip(trip._id)} className="btn btn-danger btn-sm" style={{ fontSize: '0.75rem', padding: '0.25rem 0.625rem' }}>
+                          <Button onClick={() => handleLeaveTrip(trip._id)} variant="danger" size="sm" style={{ fontSize: '0.75rem', padding: '0.25rem 0.625rem' }}>
                             Leave
-                          </button>
-                          <button onClick={() => setConfirmLeave(null)} className="btn btn-ghost btn-sm" style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem' }}>
+                          </Button>
+                          <Button onClick={() => setConfirmLeave(null)} variant="ghost" size="sm" style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem' }}>
                             Cancel
-                          </button>
+                          </Button>
                         </>
                       ) : (
-                        <button onClick={() => setConfirmLeave(trip._id)} className="btn btn-ghost btn-sm" style={{ color: 'var(--color-accent-red)' }} title="Leave collaborative trip">
+                        <Button onClick={() => setConfirmLeave(trip._id)} variant="ghost" size="sm" style={{ color: 'var(--color-accent-red)' }} title="Leave collaborative trip">
                           <LogOut size={14} />
-                        </button>
+                        </Button>
                       )}
                     </div>
                   )}
@@ -234,11 +235,11 @@ export default function MyTrips() {
       }
       if (trips.length === 0) {
         return (
-          <div className="card" style={{ textAlign: 'center', padding: '4rem' }}>
+          <div className="bg-bg-card border border-border rounded-2xl p-6 transition-all duration-base shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ textAlign: 'center', padding: '4rem' }}>
             <div style={{ fontSize: 56, marginBottom: '1rem' }}>✈️</div>
             <h2 style={{ fontWeight: 700, marginBottom: '0.5rem' }}>No trips yet</h2>
             <p style={{ color: 'var(--color-text-secondary)', marginBottom: '1.5rem' }}>Start planning your first AI-powered trip!</p>
-            <Link to="/dashboard/planner" className="btn btn-primary">Plan a Trip</Link>
+            <Link to="/dashboard/planner" className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-sm px-5 py-2.5 rounded-xl border-none cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-gradient-primary bg-[length:200%_auto] text-white shadow-btn hover:bg-right hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(129,140,248,0.5)] active:translate-y-0 active:scale-[0.98] active:shadow-btn">Plan a Trip</Link>
           </div>
         )
       }
@@ -253,7 +254,7 @@ export default function MyTrips() {
       }
       if (sharedTrips.length === 0) {
         return (
-          <div className="card" style={{ textAlign: 'center', padding: '4rem' }}>
+          <div className="bg-bg-card border border-border rounded-2xl p-6 transition-all duration-base shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ textAlign: 'center', padding: '4rem' }}>
             <div style={{ fontSize: 56, marginBottom: '1rem' }}>🤝</div>
             <h2 style={{ fontWeight: 700, marginBottom: '0.5rem' }}>No shared trips</h2>
             <p style={{ color: 'var(--color-text-secondary)' }}>Trips you are invited to collaborate on will appear here.</p>
@@ -265,11 +266,11 @@ export default function MyTrips() {
   }
 
   return (
-    <div className="page-enter">
+    <div className="animate-fadeIn">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <div>
           <h1 style={{ fontSize: '1.875rem', fontWeight: 800, marginBottom: '0.25rem' }}>
-            Trips <span className="gradient-text">Dashboard</span>
+            Trips <span className="bg-gradient-primary bg-clip-text text-transparent">Dashboard</span>
           </h1>
           <p style={{ color: 'var(--color-text-secondary)' }}>
             {activeTab === 'owned' 
@@ -278,12 +279,12 @@ export default function MyTrips() {
             }
           </p>
         </div>
-        <Link to="/dashboard/planner" className="btn btn-primary btn-sm">+ Plan New Trip</Link>
+        <Link to="/dashboard/planner" className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-[0.8125rem] px-[0.875rem] py-[0.375rem] rounded-xl border-none cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-gradient-primary bg-[length:200%_auto] text-white shadow-btn hover:bg-right hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(129,140,248,0.5)] active:translate-y-0 active:scale-[0.98] active:shadow-btn">+ Plan New Trip</Link>
       </div>
 
       {/* Tabs list */}
       <div style={{ display: 'flex', gap: '1rem', borderBottom: '1px solid var(--color-border)', marginBottom: '1.5rem' }}>
-        <button onClick={() => setActiveTab('owned')} className={`btn btn-ghost`} 
+        <button onClick={() => setActiveTab('owned')} className="inline-flex items-center justify-center font-sans font-semibold text-sm px-5 pb-3 bg-transparent cursor-pointer transition-all duration-250 ease-out whitespace-nowrap relative overflow-hidden" 
           style={{ 
             borderRadius: '0', borderBottom: activeTab === 'owned' ? '2px solid var(--color-accent-primary)' : 'none', 
             color: activeTab === 'owned' ? 'var(--color-text-primary)' : 'var(--color-text-muted)',
@@ -291,7 +292,7 @@ export default function MyTrips() {
           }}>
           My Trips
         </button>
-        <button onClick={() => setActiveTab('shared')} className={`btn btn-ghost`} 
+        <button onClick={() => setActiveTab('shared')} className="inline-flex items-center justify-center font-sans font-semibold text-sm px-5 pb-3 bg-transparent cursor-pointer transition-all duration-250 ease-out whitespace-nowrap relative overflow-hidden" 
           style={{ 
             borderRadius: '0', borderBottom: activeTab === 'shared' ? '2px solid var(--color-accent-primary)' : 'none', 
             color: activeTab === 'shared' ? 'var(--color-text-primary)' : 'var(--color-text-muted)',

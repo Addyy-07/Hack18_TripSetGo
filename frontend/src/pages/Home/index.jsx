@@ -84,8 +84,8 @@ export default function Home() {
             animate={{ opacity: 1, x: 0 }} 
             transition={{ duration: 0.8 }}
           >
-            <span className="badge badge-primary" style={{ marginBottom: '1.5rem', fontSize: '0.8125rem', padding: '0.35rem 0.85rem' }}>
-              ✨ AI-Powered Travel Planning
+            <span className="inline-flex items-center gap-1 text-[0.75rem] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider border bg-indigo-500/20 text-indigo-300 border-indigo-500/30" style={{ marginBottom: '1.5rem', fontSize: '0.8125rem', padding: '0.35rem 0.85rem' }}>
+              ✈️ AI-Powered Travel Planning
             </span>
             
             <h1 style={{
@@ -97,7 +97,7 @@ export default function Home() {
               marginBottom: '1.5rem',
             }}>
               Plan Your Dream Trip<br />
-              with <span className="gradient-text">AI in Seconds</span>
+              with <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">AI in Seconds</span>
             </h1>
             
             <p style={{ fontSize: '1.125rem', color: 'var(--color-text-secondary)', marginBottom: '2.5rem', lineHeight: 1.7, maxWidth: 520 }}>
@@ -105,10 +105,10 @@ export default function Home() {
             </p>
             
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <Link to="/auth/signup" className="btn btn-primary btn-lg" style={{ boxShadow: 'var(--shadow-btn)' }}>
+              <Link to="/auth/signup" className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-sm px-5 py-2.5 rounded-md cursor-pointer transition-all duration-250 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap no-underline relative overflow-hidden bg-gradient-to-r from-primary via-secondary to-accent bg-[length:200%_auto] text-white shadow-[0_4px_14px_0_rgba(14,165,233,0.3)] hover:bg-right hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(129,140,248,0.5)] active:translate-y-0 active:scale-[0.98] px-7 py-3.5 text-base rounded-lg" style={{ boxShadow: 'var(--shadow-btn)' }}>
                 Start Planning Free <ArrowRight size={18} />
               </Link>
-              <Link to="/discover" className="btn btn-secondary btn-lg glass-hover">
+              <Link to="/discover" className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-sm px-5 py-2.5 rounded-md cursor-pointer transition-all duration-250 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap no-underline relative overflow-hidden bg-transparent text-text-primary border border-border hover:border-primary hover:bg-primary/10 px-7 py-3.5 text-base rounded-lg transition-all duration-250 hover:border-primary/45 hover:shadow-[0_0_40px_rgba(14,165,233,0.25)]">
                 Explore Trips
               </Link>
             </div>
@@ -119,10 +119,10 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            style={{ position: 'relative', width: '100%', height: '440px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            style={{ position: 'relative', width: '100%', height: '440px', display: 'flex', alignItems: 'center', justifycontent: 'center' }}
           >
             {/* Main Interactive Scenic Frame */}
-            <div className="card" style={{
+            <div className="bg-bg-card border border-border rounded-xl p-6 transition-all duration-250 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{
               width: '100%',
               height: '100%',
               padding: 0,
@@ -150,7 +150,7 @@ export default function Home() {
 
               {/* Map/Travel Coordinates Overlay UI */}
               <div style={{ position: 'absolute', top: '1.25rem', left: '1.25rem', zIndex: 10, display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                <span className="badge badge-primary" style={{ background: 'rgba(14, 165, 233, 0.2)', backdropFilter: 'blur(8px)', textTransform: 'none', border: '1px solid rgba(14, 165, 233, 0.3)' }}>
+                <span className="inline-flex items-center gap-1 text-[0.75rem] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider border bg-indigo-500/20 text-indigo-300 border-indigo-500/30" style={{ background: 'rgba(14, 165, 233, 0.2)', backdropFilter: 'blur(8px)', textTransform: 'none', border: '1px solid rgba(14, 165, 233, 0.3)' }}>
                   📍 Active Router: TSG-V4
                 </span>
                 <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.6)', textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>Mapbox Engine</span>
@@ -295,7 +295,7 @@ export default function Home() {
               </div>
 
               {/* Floating Widget: Budget counter */}
-              <div className="glass" style={{
+              <div className="bg-bg-card/75 backdrop-blur-[20px] border border-border shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]" style={{
                 position: 'absolute',
                 bottom: '1rem',
                 left: '1rem',
@@ -322,7 +322,7 @@ export default function Home() {
 
       {/* Horizontal Features Highlights Summary Bar */}
       <section style={{ padding: '0 2rem', marginTop: '-3rem', position: 'relative', zIndex: 10 }}>
-        <div className="glass" style={{
+        <div className="bg-bg-card/75 backdrop-blur-[20px] border border-border shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]" style={{
           maxWidth: 1200,
           margin: '0 auto',
           padding: '1.75rem 1.25rem',
@@ -348,13 +348,13 @@ export default function Home() {
                 borderRadius: 'var(--radius-md)',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
               }}>
                 {f.icon}
               </div>
               <div>
-                <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.15rem' }}>{f.title}</h3>
-                <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', lineHeight: '1.3' }}>{f.desc}</p>
+                <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: 'white', marginBottom: '0.15rem' }}>{f.title}</h4>
+                <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', margin: 0, lineHeight: 1.3 }}>{f.desc}</p>
               </div>
             </div>
           ))}
@@ -363,15 +363,15 @@ export default function Home() {
 
       {/* Popular Destinations Section */}
       <section style={{ padding: '6rem 2rem 4rem', maxWidth: 1200, margin: '0 auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3rem', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <h2 style={{ fontSize: '2.25rem', fontWeight: 800, marginBottom: '0.5rem', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-              Popular <span className="gradient-text">Destinations</span>
+              Explore <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">Popular Destinations</span>
             </h2>
-            <p style={{ color: 'var(--color-text-secondary)' }}>Explore highly-rated guides curated by real travelers and Gemini AI</p>
+            <p style={{ color: 'var(--color-text-secondary)', margin: 0 }}>Handpicked spots with optimal AI trip suggestions</p>
           </div>
-          <Link to="/discover" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--primary)', fontSize: '0.9rem', fontWeight: 600, textDecoration: 'none' }} className="glass-hover">
-            View all destinations <ArrowRight size={16} />
+          <Link to="/discover" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--primary)', fontSize: '0.9rem', fontWeight: 600, textDecoration: 'none' }} className="transition-all duration-250 hover:border-border-hover hover:shadow-glow hover:-translate-y-0.5">
+            View All Discoveries <ArrowRight size={16} />
           </Link>
         </div>
 
@@ -379,7 +379,7 @@ export default function Home() {
           {popularDestinations.map((d, i) => (
             <motion.div
               key={d.title}
-              className="card card-hover"
+              className="group bg-bg-card border border-border rounded-xl p-6 transition-all duration-250 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] cursor-pointer"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -401,8 +401,7 @@ export default function Home() {
                 position: 'absolute',
                 inset: 0,
                 background: `url("${d.image}") center center/cover no-repeat`,
-                transition: 'transform var(--transition-slow)'
-              }} className="dest-image-bg" />
+              }} className="dest-image-bg transition-transform duration-slow group-hover:scale-105" />
 
               {/* Gradient Dark Overlay */}
               <div style={{
@@ -413,7 +412,7 @@ export default function Home() {
               }} />
 
               {/* Tag (e.g. Hot/Popular) */}
-              <span className="badge" style={{
+              <span className="inline-flex items-center gap-1 text-[0.75rem] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider border" style={{
                 position: 'absolute',
                 top: '1rem',
                 left: '1rem',
@@ -443,7 +442,7 @@ export default function Home() {
       <section style={{ padding: '4rem 2rem 6rem', maxWidth: 1200, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
           <h2 style={{ fontSize: '2.25rem', fontWeight: 800, marginBottom: '1rem', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-            Everything You Need to <span className="gradient-text">Travel Smarter</span>
+            Everything You Need to <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">Travel Smarter</span>
           </h2>
           <p style={{ color: 'var(--color-text-secondary)', maxWidth: 560, margin: '0 auto' }}>
             From AI itinerary generation to group expense splitting, TripSetGo has every feature modern travellers need.
@@ -453,15 +452,15 @@ export default function Home() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
           {[
             { icon: <Sparkles size={24} />, title: 'AI-Powered Planning', desc: 'Gemini AI generates personalized itineraries with multiple transport, hotel, and activity options.' },
-            { icon: <Map size={24} />,      title: 'Interactive Maps',    desc: 'Visualize your entire trip on Mapbox — from source to destination with route visualization.' },
+            { icon: <Map size={24} />,      title: 'Interactive Maps',    desc: 'Visualize your entire trip on Mapbox – from source to destination with route visualization.' },
             { icon: <Users size={24} />,    title: 'Group Travel',        desc: 'Plan group trips with Splitwise-style expense splitting and real-time settlement calculations.' },
             { icon: <Compass size={24} />,  title: 'Social Discover',     desc: 'Browse, like, save and clone public trips from a global community of travellers.' },
             { icon: <Star size={24} />,     title: 'Live Budget Tracker', desc: 'Watch your budget update in real-time as you select transport, hotels, food and activities.' },
-            { icon: <TrendingUp size={24} />, title: 'Smart Suggestions', desc: 'Get contextual AI tips — upgrade alerts, budget warnings, and adventure recommendations.' },
+            { icon: <TrendingUp size={24} />, title: 'Smart Suggestions', desc: 'Get contextual AI tips – upgrade alerts, budget warnings, and adventure recommendations.' },
           ].map((f, i) => (
             <motion.div
               key={f.title}
-              className="card card-hover"
+              className="bg-bg-card border border-border rounded-xl p-6 transition-all duration-250 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] hover:border-border-hover hover:-translate-y-1 hover:shadow-glow-strong hover:bg-[#0e1529]"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -490,7 +489,7 @@ export default function Home() {
 
       {/* CTA Section */}
       <section style={{ padding: '3rem 2rem 6rem', textAlign: 'center' }}>
-        <div className="glass animate-fadeIn" style={{
+        <div className="bg-bg-card/75 backdrop-blur-[20px] border border-border shadow-[inset_0_0_20px_rgba(255,255,255,0.02)] animate-fadeIn" style={{
           maxWidth: 900,
           margin: '0 auto',
           padding: '4.5rem 2rem',
@@ -500,28 +499,28 @@ export default function Home() {
           boxShadow: 'var(--shadow-glow-strong)'
         }}>
           <h2 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '1rem', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-            Ready to Plan Your Next <span className="gradient-text">Adventure?</span>
+            Ready to Plan Your Next <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">Adventure?</span>
           </h2>
           <p style={{ color: 'var(--color-text-secondary)', marginBottom: '2.5rem', maxWidth: 500, margin: '0 auto 2.5rem' }}>
-            Create your first AI-powered itinerary in under a minute — no credit card needed.
+            Create your first AI-powered itinerary in under a minute – no credit card needed.
           </p>
-          <Link to="/auth/signup" className="btn btn-primary btn-lg" style={{ boxShadow: 'var(--shadow-btn)' }}>
-            Get Started — It's Free <ArrowRight size={18} />
+          <Link to="/auth/signup" className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-sm px-5 py-2.5 rounded-md cursor-pointer transition-all duration-250 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap no-underline relative overflow-hidden bg-gradient-to-r from-primary via-secondary to-accent bg-[length:200%_auto] text-white shadow-[0_4px_14px_0_rgba(14,165,233,0.3)] hover:bg-right hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(129,140,248,0.5)] active:translate-y-0 active:scale-[0.98] px-7 py-3.5 text-base rounded-lg" style={{ boxShadow: 'var(--shadow-btn)' }}>
+            Get Started – It's Free <ArrowRight size={18} />
           </Link>
         </div>
       </section>
 
       {/* Footer */}
       <footer style={{ borderTop: '1px solid var(--color-border)', padding: '2.5rem 2rem', background: '#070d1a' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1.5rem' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifycontent: 'space-between', gap: '1.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <span style={{ fontSize: 20 }}>✈️</span>
             <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: '1.15rem' }}>
-              Trip<span className="gradient-text">SetGo</span>
+              Trip<span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">SetGo</span>
             </span>
           </div>
           <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>
-            © {new Date().getFullYear()} TripSetGo · AI-Powered Travel Planning
+            © {new Date().getFullYear()} TripSetGo • AI-Powered Travel Planning
           </p>
           <div style={{ display: 'flex', gap: '2rem' }}>
             <Link to="/discover" style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem', textDecoration: 'none' }}>Discover</Link>
@@ -530,13 +529,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-
-      {/* Custom Styles for Card Background Hover Scale */}
-      <style>{`
-        .card:hover .dest-image-bg {
-          transform: scale(1.05);
-        }
-      `}</style>
     </div>
   )
 }

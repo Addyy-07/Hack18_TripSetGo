@@ -1,4 +1,4 @@
-// src/pages/Dashboard/Profile.jsx
+﻿// src/pages/Dashboard/Profile.jsx
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
@@ -35,12 +35,12 @@ export default function Profile() {
   }
 
   return (
-    <div className="page-enter">
-      <h1 style={{ fontSize: '1.875rem', fontWeight: 800, marginBottom: '2rem' }}>My <span className="gradient-text">Profile</span></h1>
+    <div className="animate-fadeIn">
+      <h1 style={{ fontSize: '1.875rem', fontWeight: 800, marginBottom: '2rem' }}>My <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">Profile</span></h1>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '2rem', alignItems: 'start' }}>
         {/* Profile card */}
-        <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} className="card" style={{ textAlign: 'center' }}>
+        <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ textAlign: 'center' }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
             <Avatar src={user?.avatar} name={user?.name} size="xl" />
           </div>
@@ -61,7 +61,7 @@ export default function Profile() {
         </motion.div>
 
         {/* Edit form */}
-        <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} className="card">
+        <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
           <h3 style={{ fontWeight: 700, marginBottom: '1.5rem' }}>Edit Profile</h3>
           {saved && <div style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: 'var(--radius-md)', padding: '0.75rem 1rem', marginBottom: '1rem', color: '#34d399', fontSize: '0.875rem' }}>✅ Profile updated!</div>}
           {saveError && <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 'var(--radius-md)', padding: '0.75rem 1rem', marginBottom: '1rem', color: '#f87171', fontSize: '0.875rem' }}>⚠️ {saveError}</div>}
@@ -70,7 +70,7 @@ export default function Profile() {
             <div>
               <label style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--color-text-secondary)', display: 'block', marginBottom: '0.375rem' }}>Bio</label>
               <textarea
-                className="input"
+                className="w-full bg-surface border border-border rounded-md text-text-primary font-sans text-[0.9375rem] px-4 py-3 transition-all duration-150 outline-none placeholder:text-text-muted focus:border-primary focus:shadow-[0_0_0_3px_rgba(14,165,233,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
                 rows={3}
                 placeholder="Tell others about your travel style..."
                 value={form.bio}

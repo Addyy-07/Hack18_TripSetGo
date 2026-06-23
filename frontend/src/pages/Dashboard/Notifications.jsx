@@ -1,4 +1,4 @@
-// src/pages/Dashboard/Notifications.jsx
+﻿// src/pages/Dashboard/Notifications.jsx
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
@@ -14,11 +14,11 @@ export default function Notifications() {
   useEffect(() => { dispatch(fetchNotifications()) }, [dispatch])
 
   return (
-    <div className="page-enter">
+    <div className="animate-fadeIn">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <div>
           <h1 style={{ fontSize: '1.875rem', fontWeight: 800, marginBottom: '0.25rem' }}>
-            <span className="gradient-text">Notifications</span>
+            <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">Notifications</span>
           </h1>
           <p style={{ color: 'var(--color-text-secondary)' }}>{unread} unread</p>
         </div>
@@ -30,7 +30,7 @@ export default function Notifications() {
       </div>
 
       {items.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: '4rem' }}>
+        <div className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ textAlign: 'center', padding: '4rem' }}>
           <Bell size={48} style={{ color: 'var(--color-text-muted)', margin: '0 auto 1rem' }} />
           <h3 style={{ fontWeight: 700, marginBottom: '0.5rem' }}>No notifications</h3>
           <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.875rem' }}>You're all caught up!</p>
@@ -40,7 +40,7 @@ export default function Notifications() {
           {items.map((n, i) => (
             <motion.div key={n._id} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}
               onClick={() => !n.isRead && dispatch(markRead(n._id))}
-              className="card"
+              className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
               style={{ cursor: n.isRead ? 'default' : 'pointer', opacity: n.isRead ? 0.82 : 1, borderLeft: n.isRead ? '3px solid transparent' : '3px solid var(--color-accent-primary)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
                 <div style={{ flex: 1 }}>

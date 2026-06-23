@@ -42,25 +42,9 @@ export default function Sidebar({ isOpen = false }) {
 
   return (
     <aside
-      className={`dashboard-sidebar${isOpen ? ' sidebar-open' : ''}`}
-      style={{
-        width: 240,
-        flexShrink: 0,
-        position: 'fixed',
-        top: 64,
-        left: 0,
-        bottom: 0,
-        overflowY: 'auto',
-        overflowX: 'hidden',
-        background: 'var(--color-bg-secondary)',
-        borderRight: '1px solid var(--color-border)',
-        padding: '1.25rem 0.75rem',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '0.125rem',
-      }}
+      className={`w-[240px] min-w-[240px] flex-shrink-0 fixed top-16 left-0 bottom-0 overflow-y-auto overflow-x-hidden bg-bg-secondary border-r border-solid border-border p-[1.25rem_0.75rem] flex flex-col gap-1 transition-transform duration-300 ease-out z-50 -translate-x-full md:translate-x-0 ${isOpen ? 'translate-x-0 shadow-[4px_0_24px_rgba(0,0,0,0.5)]' : ''}`}
     >
-      <p style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--color-text-muted)', letterSpacing: '0.08em', textTransform: 'uppercase', padding: '0 0.875rem', marginBottom: '0.5rem' }}>
+      <p className="shrink-0 text-[0.6875rem] font-bold tracking-[0.08em] uppercase px-3.5 mb-2 mt-1" style={{ color: 'var(--color-text-muted)' }}>
         Navigation
       </p>
       {navItems.map(({ icon, label, to }) => (
@@ -68,16 +52,22 @@ export default function Sidebar({ isOpen = false }) {
           key={to}
           to={to}
           end={to === '/dashboard'}
-          className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`}
+          className={({ isActive }) =>
+            `shrink-0 flex items-center gap-3 px-3.5 py-2.5 rounded-xl no-underline text-sm border border-transparent transition-all duration-150 relative ` +
+            (isActive
+              ? 'font-semibold text-text-primary bg-linear-to-r from-[rgba(129,140,248,0.15)] to-transparent border-[rgba(129,140,248,0.3)] ' +
+                "after:content-[''] after:absolute after:left-0 after:top-[15%] after:h-[70%] after:w-1 after:bg-gradient-primary after:rounded-r after:shadow-[0_0_10px_rgba(129,140,248,0.8)]"
+              : 'font-normal text-text-secondary bg-transparent hover:bg-[rgba(255,255,255,0.05)] hover:text-text-primary hover:border-[rgba(99,102,241,0.1)]')
+          }
         >
-          <span style={{ flexShrink: 0 }}>{icon}</span>
+          <span className="shrink-0 inline-flex">{icon}</span>
           {label}
         </NavLink>
       ))}
 
       {isAdmin && (
         <>
-          <p style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--color-text-muted)', letterSpacing: '0.08em', textTransform: 'uppercase', padding: '0 0.875rem', marginTop: '1.5rem', marginBottom: '0.5rem' }}>
+          <p className="shrink-0 text-[0.6875rem] font-bold tracking-[0.08em] uppercase px-3.5 mt-6 mb-2" style={{ color: 'var(--color-text-muted)' }}>
             Admin Console
           </p>
           {adminNavItems.map(({ icon, label, to }) => (
@@ -85,9 +75,15 @@ export default function Sidebar({ isOpen = false }) {
               key={to}
               to={to}
               end={to === '/dashboard/admin'}
-              className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`}
+              className={({ isActive }) =>
+                `shrink-0 flex items-center gap-3 px-3.5 py-2.5 rounded-xl no-underline text-sm border border-transparent transition-all duration-150 relative ` +
+                (isActive
+                  ? 'font-semibold text-text-primary bg-linear-to-r from-[rgba(129,140,248,0.15)] to-transparent border-[rgba(129,140,248,0.3)] ' +
+                    "after:content-[''] after:absolute after:left-0 after:top-[15%] after:h-[70%] after:w-1 after:bg-gradient-primary after:rounded-r after:shadow-[0_0_10px_rgba(129,140,248,0.8)]"
+                  : 'font-normal text-text-secondary bg-transparent hover:bg-[rgba(255,255,255,0.05)] hover:text-text-primary hover:border-[rgba(99,102,241,0.1)]')
+              }
             >
-              <span style={{ flexShrink: 0 }}>{icon}</span>
+              <span className="shrink-0 inline-flex">{icon}</span>
               {label}
             </NavLink>
           ))}
@@ -97,34 +93,9 @@ export default function Sidebar({ isOpen = false }) {
       {/* Logout Action Button at the bottom of sidebar */}
       <button
         onClick={handleLogout}
-        className="sidebar-link"
-        style={{
-          marginTop: 'auto',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.75rem',
-          padding: '0.625rem 0.875rem',
-          borderRadius: 'var(--radius-md)',
-          fontSize: '0.875rem',
-          fontWeight: 500,
-          color: 'var(--color-accent-red)',
-          background: 'transparent',
-          border: '1px solid transparent',
-          cursor: 'pointer',
-          width: '100%',
-          textAlign: 'left',
-          transition: 'all var(--transition-fast)'
-        }}
-        onMouseEnter={e => {
-          e.currentTarget.style.background = 'rgba(239, 68, 68, 0.08)';
-          e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.15)';
-        }}
-        onMouseLeave={e => {
-          e.currentTarget.style.background = 'transparent';
-          e.currentTarget.style.borderColor = 'transparent';
-        }}
+        className="shrink-0 flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm border border-transparent transition-all duration-150 relative font-medium text-accent-red bg-transparent cursor-pointer w-full mt-auto hover:bg-red-500/8 hover:border-red-500/15"
       >
-        <span style={{ display: 'inline-flex', flexShrink: 0 }}><LogOut size={18} /></span>
+        <span className="inline-flex shrink-0"><LogOut size={18} /></span>
         Logout
       </button>
     </aside>

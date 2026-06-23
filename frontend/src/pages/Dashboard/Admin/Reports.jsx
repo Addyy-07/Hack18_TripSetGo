@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchReports, selectAdmin } from '@/features/admin/adminSlice'
 import { ShieldCheck, ShieldAlert, Terminal, Calendar, User, Info } from 'lucide-react'
 import Loader from '@/components/common/Loader'
+import Badge from '@/components/common/Badge'
 
 export default function AdminReports() {
   const dispatch = useDispatch()
@@ -15,10 +16,10 @@ export default function AdminReports() {
   }, [dispatch, page])
 
   return (
-    <div className="page-enter">
+    <div className="animate-fadeIn">
       {/* Title */}
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '1.875rem', fontWeight: 800, marginBottom: '0.25rem' }}>Audit <span className="gradient-text">Logs</span></h1>
+        <h1 style={{ fontSize: '1.875rem', fontWeight: 800, marginBottom: '0.25rem' }}>Audit <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">Logs</span></h1>
         <p style={{ color: 'var(--color-text-secondary)' }}>Track administrative updates, roles escalations, and system actions</p>
       </div>
 
@@ -26,7 +27,7 @@ export default function AdminReports() {
       {loading ? (
         <Loader text="Fetching audit logs..." />
       ) : reports.length === 0 ? (
-        <div className="card" style={{ padding: '4rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>
+        <div className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ padding: '4rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>
           <ShieldCheck size={40} style={{ margin: '0 auto 1rem', opacity: 0.5 }} />
           <p style={{ fontWeight: 600 }}>System is clean. No audit logs recorded.</p>
         </div>
@@ -35,7 +36,7 @@ export default function AdminReports() {
           {reports.map((log) => {
             const isFailure = log.status === 'failure'
             return (
-              <div key={log._id} className="card" style={{ padding: '1.25rem', borderColor: isFailure ? '#ef4444' : 'var(--color-border)' }}>
+              <div key={log._id} className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ padding: '1.25rem', borderColor: isFailure ? '#ef4444' : 'var(--color-border)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                   
                   {/* Action + Status */}
@@ -61,9 +62,7 @@ export default function AdminReports() {
                     </div>
                   </div>
 
-                  <span className={`badge ${isFailure ? 'badge-danger' : 'badge-success'}`}>
-                    {log.status}
-                  </span>
+                  <Badge label={log.status} variant={isFailure ? 'danger' : 'success'} />
 
                 </div>
 
@@ -90,13 +89,13 @@ export default function AdminReports() {
       {/* Pagination */}
       {reportsPagination && reportsPagination.totalPages > 1 && (
         <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: '1rem' }}>
-          <button className="btn btn-secondary" disabled={page === 1} onClick={() => setPage(page - 1)}>
+          <button className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer border border-border bg-transparent text-text-primary hover:border-primary/45 hover:bg-white/5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed" disabled={page === 1} onClick={() => setPage(page - 1)}>
             Previous
           </button>
           <span style={{ display: 'flex', alignItems: 'center', padding: '0 1rem', fontSize: '0.875rem', fontWeight: 600 }}>
             Page {page} of {reportsPagination.totalPages}
           </span>
-          <button className="btn btn-secondary" disabled={page === reportsPagination.totalPages} onClick={() => setPage(page + 1)}>
+          <button className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer border border-border bg-transparent text-text-primary hover:border-primary/45 hover:bg-white/5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed" disabled={page === reportsPagination.totalPages} onClick={() => setPage(page + 1)}>
             Next
           </button>
         </div>

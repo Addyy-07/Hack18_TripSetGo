@@ -1,4 +1,4 @@
-// src/pages/Dashboard/Copilot.jsx
+﻿// src/pages/Dashboard/Copilot.jsx
 import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
@@ -31,7 +31,7 @@ function Bubble({ role, text, streaming }) {
         fontSize: '0.9rem', lineHeight: 1.6,
         whiteSpace: 'pre-wrap', wordBreak: 'break-word',
       }}>
-        {text || (streaming ? <span className="animate-pulse-slow" style={{ color: 'var(--color-text-muted)' }}>Thinking…</span> : '')}
+        {text || (streaming ? <span className="animate-pulse-slow" style={{ color: 'var(--color-text-muted)' }}>Thinking...</span> : '')}
       </div>
     </motion.div>
   )
@@ -51,8 +51,7 @@ export default function Copilot() {
   const loadConversations = async () => {
     try { const res = await api.get('/api/v1/copilot/conversations'); setConversations(res.data.data || []) } catch { /* ignore */ }
   }
-  // Fetch on mount — setState is deferred into the promise callback (not a
-  // synchronous effect body) so it doesn't trigger cascading renders.
+
   useEffect(() => {
     let active = true
     api.get('/api/v1/copilot/conversations')
@@ -151,7 +150,7 @@ export default function Copilot() {
   const onSubmit = (e) => { e.preventDefault(); send() }
 
   return (
-    <div className="page-enter" style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 120px)', minHeight: 460 }}>
+    <div className="animate-fadeIn" style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 120px)', minHeight: 460 }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.75rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -159,37 +158,39 @@ export default function Copilot() {
             <Sparkles size={20} color="white" />
           </div>
           <div>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Travel <span className="gradient-text">Copilot</span></h1>
+            <h1 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Travel <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">Copilot</span></h1>
             <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.8rem' }}>
               {tripId ? 'Grounded on your selected trip' : 'Ask anything — destinations, budgets, itineraries'}
             </p>
           </div>
         </div>
-        <button onClick={newChat} className="btn btn-secondary btn-sm" style={{ gap: '0.3rem' }}><Plus size={15} /> New chat</button>
+        <button onClick={newChat} className="inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer border border-border hover:border-primary hover:bg-primary/10 transition-all" style={{ gap: '0.3rem' }}><Plus size={15} /> New chat</button>
       </div>
 
       {/* Recent conversations */}
       {conversations.length > 0 && (
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
-          {conversations.slice(0, 8).map((c) => (
-            <button key={c._id} onClick={() => openConversation(c._id)}
-              className="btn btn-sm" style={{
-                gap: '0.4rem',
-                background: c._id === convId ? 'rgba(129,140,248,0.15)' : 'transparent',
-                border: `1px solid ${c._id === convId ? 'var(--color-accent-primary)' : 'var(--color-border)'}`,
-                color: 'var(--color-text-secondary)', maxWidth: 200,
-              }}>
-              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {c.tripId?.destination ? `✈ ${c.tripId.destination}` : (c.lastMessage?.text?.slice(0, 24) || 'New conversation')}
-              </span>
-              <Trash2 size={12} onClick={(e) => deleteConv(c._id, e)} style={{ flexShrink: 0, opacity: 0.6 }} />
-            </button>
-          ))}
+          {conversations.slice(0, 8).map((c) => {
+            const active = c._id === convId
+            return (
+              <button key={c._id} onClick={() => openConversation(c._id)}
+                className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer border transition-all" style={{
+                  background: active ? 'rgba(129,140,248,0.15)' : 'transparent',
+                  borderColor: active ? 'var(--color-accent-primary)' : 'var(--color-border)',
+                  color: 'var(--color-text-secondary)', maxWidth: 200,
+                }}>
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {c.tripId?.destination ? `✈️ ${c.tripId.destination}` : (c.lastMessage?.text?.slice(0, 24) || 'New conversation')}
+                </span>
+                <Trash2 size={12} onClick={(e) => deleteConv(c._id, e)} style={{ flexShrink: 0, opacity: 0.6 }} />
+              </button>
+            )
+          })}
         </div>
       )}
 
       {/* Messages */}
-      <div ref={scrollRef} className="card" style={{ flex: 1, overflowY: 'auto', padding: '1.25rem', marginBottom: '1rem' }}>
+      <div ref={scrollRef} className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ flex: 1, overflowY: 'auto', padding: '1.25rem', marginBottom: '1rem' }}>
         {messages.length === 0 ? (
           <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', color: 'var(--color-text-muted)' }}>
             <Sparkles size={40} style={{ marginBottom: '1rem', color: 'var(--color-accent-primary)' }} />
@@ -197,7 +198,7 @@ export default function Copilot() {
             <p style={{ fontSize: '0.85rem', marginBottom: '1.5rem' }}>Try one of these:</p>
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center', maxWidth: 520 }}>
               {SUGGESTIONS.map((s) => (
-                <button key={s} onClick={() => send(s)} className="btn btn-secondary btn-sm" style={{ fontWeight: 500 }}>{s}</button>
+                <button key={s} onClick={() => send(s)} className="inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer border border-border hover:border-primary hover:bg-primary/10 transition-all" style={{ fontWeight: 500 }}>{s}</button>
               ))}
             </div>
           </div>
@@ -211,14 +212,14 @@ export default function Copilot() {
       {/* Input */}
       <form onSubmit={onSubmit} style={{ display: 'flex', gap: '0.75rem' }}>
         <input
-          className="input"
-          placeholder="Message the copilot…"
+          className="w-full bg-surface border border-border rounded-md text-text-primary font-sans text-[0.9375rem] px-4 py-3 transition-all duration-150 outline-none placeholder:text-text-muted focus:border-primary focus:shadow-[0_0_0_3px_rgba(14,165,233,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
+          placeholder="Message the copilot..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
           disabled={streaming}
           style={{ flex: 1 }}
         />
-        <button type="submit" className="btn btn-primary" disabled={streaming || !input.trim()} style={{ gap: '0.4rem' }}>
+        <button type="submit" className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-sm px-5 py-2.5 rounded-md cursor-pointer transition-all duration-200 bg-gradient-to-r from-primary via-secondary to-accent bg-[length:200%_auto] text-white shadow-[0_4px_14px_0_rgba(14,165,233,0.3)] hover:bg-right hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(129,140,248,0.5)] active:translate-y-0 active:scale-[0.98]" disabled={streaming || !input.trim()} style={{ gap: '0.4rem' }}>
           <Send size={16} /> Send
         </button>
       </form>

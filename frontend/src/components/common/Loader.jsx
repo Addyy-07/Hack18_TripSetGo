@@ -35,11 +35,11 @@ export default function Loader({ size = 'md', fullScreen = false, text }) {
 
 export function SkeletonCard() {
   return (
-    <div className="card" style={{ padding: '1.5rem' }}>
-      <div className="skeleton" style={{ height: 180, marginBottom: '1rem', borderRadius: 'var(--radius-md)' }} />
-      <div className="skeleton" style={{ height: 20, width: '70%', marginBottom: '0.75rem' }} />
-      <div className="skeleton" style={{ height: 16, width: '50%', marginBottom: '0.5rem' }} />
-      <div className="skeleton" style={{ height: 16, width: '40%' }} />
+    <div className="bg-bg-card border border-border rounded-2xl p-6 transition-all duration-250 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ padding: '1.5rem' }}>
+      <div className="bg-gradient-to-r from-white/4 via-white/9 to-white/4 bg-[length:200%_100%] animate-shimmer rounded-sm" style={{ height: 180, marginBottom: '1rem', borderRadius: 'var(--radius-md)' }} />
+      <div className="bg-gradient-to-r from-white/4 via-white/9 to-white/4 bg-[length:200%_100%] animate-shimmer rounded-sm" style={{ height: 20, width: '70%', marginBottom: '0.75rem' }} />
+      <div className="bg-gradient-to-r from-white/4 via-white/9 to-white/4 bg-[length:200%_100%] animate-shimmer rounded-sm" style={{ height: 16, width: '50%', marginBottom: '0.5rem' }} />
+      <div className="bg-gradient-to-r from-white/4 via-white/9 to-white/4 bg-[length:200%_100%] animate-shimmer rounded-sm" style={{ height: 16, width: '40%' }} />
     </div>
   )
 }

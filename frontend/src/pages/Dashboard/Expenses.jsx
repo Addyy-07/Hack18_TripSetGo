@@ -1,4 +1,4 @@
-// src/pages/Dashboard/Expenses.jsx
+﻿// src/pages/Dashboard/Expenses.jsx
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
@@ -61,7 +61,12 @@ export default function Expenses() {
   const isOwner = group && user && (group.ownerId === user._id || group.ownerId?._id === user._id)
   const memberName = (id) => members.find((m) => m._id === id)?.name || 'Someone'
 
-  // ── Mutations ──────────────────────────────────────────────────────────────
+  const total = activeDetail?.total || 0
+  const balances = activeDetail?.balances || {}
+  const settlements = activeDetail?.settlements || []
+  const perPerson = members.length > 0 ? total / members.length : 0
+
+  // ── Mutations ──
   const submitGroup = async (e) => {
     e.preventDefault()
     if (!groupName.trim()) return toast('error', 'Give your group a name')
@@ -134,17 +139,12 @@ export default function Expenses() {
     splitAmong: p.splitAmong.includes(id) ? p.splitAmong.filter((x) => x !== id) : [...p.splitAmong, id],
   }))
 
-  // ── Render ───────────────────────────────────────────────────────────────────
-  const total      = activeDetail?.total || 0
-  const perPerson  = members.length ? total / members.length : 0
-  const settlements = activeDetail?.settlements || []
-  const balances    = activeDetail?.balances || {}
-
+  // ── Render ──
   return (
-    <div className="page-enter">
+    <div className="animate-fadeIn">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.875rem', fontWeight: 800, marginBottom: '0.25rem' }}>Group <span className="gradient-text">Expenses</span></h1>
+          <h1 style={{ fontSize: '1.875rem', fontWeight: 800, marginBottom: '0.25rem' }}>Group <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">Expenses</span></h1>
           <p style={{ color: 'var(--color-text-secondary)' }}>Split costs with friends and settle up fairly</p>
         </div>
         <Button icon={<Plus size={15} />} size="sm" onClick={() => setCreateOpen(true)}>New Group</Button>
@@ -155,8 +155,8 @@ export default function Expenses() {
           {[1, 2, 3].map((i) => <SkeletonCard key={i} />)}
         </div>
       ) : groups.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-          <div style={{ fontSize: 56, marginBottom: '1rem' }}>🧾</div>
+        <div className="bg-bg-card border border-border rounded-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] text-center py-16 px-8">
+          <div style={{ fontSize: 56, marginBottom: '1rem' }}>👥</div>
           <h2 style={{ fontWeight: 700, marginBottom: '0.5rem' }}>No expense groups yet</h2>
           <p style={{ color: 'var(--color-text-secondary)', marginBottom: '1.5rem', maxWidth: 420, marginInline: 'auto' }}>
             Create a group for your trip, add the friends travelling with you, and TripSetGo will track who paid what and who owes whom.
@@ -171,12 +171,7 @@ export default function Expenses() {
               const active = g._id === selectedId
               return (
                 <button key={g._id} onClick={() => setPickedId(g._id)}
-                  className="card" style={{
-                    cursor: 'pointer', padding: '0.875rem 1.125rem', minWidth: 180, textAlign: 'left',
-                    borderColor: active ? 'var(--color-accent-primary)' : undefined,
-                    background: active ? 'rgba(129,140,248,0.1)' : undefined,
-                    boxShadow: active ? '0 0 18px rgba(129,140,248,0.25)' : undefined,
-                  }}>
+                  className={`border rounded-xl px-4 py-3.5 min-w-[180px] text-left transition-all cursor-pointer ${active ? 'border-primary bg-[rgba(129,140,248,0.1)] shadow-[0_0_18px_rgba(129,140,248,0.25)]' : 'border-border bg-bg-card hover:border-primary/45'}`}>
                   <p style={{ fontWeight: 700, marginBottom: '0.25rem' }}>{g.name}</p>
                   <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
                     {(g.members?.length || 0)} member{(g.members?.length || 0) === 1 ? '' : 's'} • {inr(g.totalSpent)}
@@ -194,7 +189,7 @@ export default function Expenses() {
           ) : activeDetail ? (
             <>
               {/* Group header */}
-              <div className="glass" style={{ padding: '1.25rem 1.5rem', borderRadius: 'var(--radius-lg)', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+              <div className="bg-[rgba(17,24,39,0.75)] backdrop-blur-[20px] border border-border rounded-xl shadow-[inset_0_0_20px_rgba(255,255,255,0.02)] px-6 py-5 mb-6 flex justify-between items-center flex-wrap gap-4">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <div style={{ display: 'flex' }}>
                     {members.slice(0, 5).map((m, i) => (
@@ -212,7 +207,7 @@ export default function Expenses() {
                   {isOwner && <Button variant="secondary" size="sm" icon={<UserPlus size={15} />} onClick={() => setMemberOpen(true)}>Add member</Button>}
                   <Button size="sm" icon={<Plus size={15} />} onClick={openAddExpense}>Add expense</Button>
                   {isOwner && (
-                    <button onClick={onDeleteGroup} className="btn btn-ghost btn-sm" style={{ color: 'var(--color-accent-red)' }} title="Delete group">
+                    <button onClick={onDeleteGroup} className="inline-flex items-center justify-center p-2 rounded-lg text-xs font-semibold bg-transparent text-red-500 cursor-pointer hover:bg-white/5 hover:text-red-600 transition-all" title="Delete group">
                       <Trash2 size={15} />
                     </button>
                   )}
@@ -226,7 +221,7 @@ export default function Expenses() {
                   { label: 'Members',      value: members.length, icon: <Users size={20} />,      color: '#22d3ee' },
                   { label: 'Per Person',   value: inr(perPerson), icon: <Calculator size={20} />, color: '#34d399' },
                 ].map((s) => (
-                  <motion.div key={s.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="card" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                  <motion.div key={s.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex gap-4 items-center">
                     <div style={{ width: 44, height: 44, background: `${s.color}20`, borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color, flexShrink: 0 }}>{s.icon}</div>
                     <div>
                       <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.8rem' }}>{s.label}</p>
@@ -241,7 +236,7 @@ export default function Expenses() {
                 <div>
                   <h2 style={{ fontWeight: 700, marginBottom: '1rem' }}>Expenses</h2>
                   {activeDetail.expenses.length === 0 ? (
-                    <div className="card" style={{ textAlign: 'center', padding: '2.5rem 1rem', color: 'var(--color-text-muted)' }}>
+                    <div className="bg-bg-card border border-border rounded-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] text-center py-10 px-4 text-text-muted">
                       <Wallet size={36} style={{ margin: '0 auto 0.75rem', opacity: 0.5 }} />
                       <p style={{ fontWeight: 600 }}>No expenses yet</p>
                       <p style={{ fontSize: '0.85rem', marginTop: '0.25rem' }}>Add the first one to start splitting.</p>
@@ -251,7 +246,7 @@ export default function Expenses() {
                       {activeDetail.expenses.map((e, i) => {
                         const meta = CATEGORY_META[e.category] || CATEGORY_META.misc
                         return (
-                          <motion.div key={e._id} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }} className="card" style={{ padding: '1rem 1.125rem' }}>
+                          <motion.div key={e._id} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }} className="bg-bg-card border border-border rounded-xl p-4.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem' }}>
                               <div style={{ display: 'flex', gap: '0.875rem', alignItems: 'center', minWidth: 0 }}>
                                 <div style={{ width: 40, height: 40, borderRadius: 'var(--radius-md)', background: `${meta.color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>{meta.emoji}</div>
@@ -265,7 +260,7 @@ export default function Expenses() {
                               </div>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
                                 <p style={{ fontWeight: 700 }}>{inr(e.amount)}</p>
-                                <button onClick={() => onDeleteExpense(e._id)} className="btn btn-ghost btn-sm" style={{ color: 'var(--color-accent-red)', padding: '0.25rem' }} title="Delete expense">
+                                <button onClick={() => onDeleteExpense(e._id)} className="inline-flex items-center justify-center p-1 rounded-md text-xs bg-transparent text-red-500 cursor-pointer hover:bg-white/5 transition-all" title="Delete expense">
                                   <Trash2 size={14} />
                                 </button>
                               </div>
@@ -280,7 +275,7 @@ export default function Expenses() {
                 {/* Settlements + balances */}
                 <div>
                   <h2 style={{ fontWeight: 700, marginBottom: '1rem' }}>Settle Up</h2>
-                  <div className="card" style={{ marginBottom: '1.25rem' }}>
+                  <div className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] mb-5">
                     {settlements.length === 0 ? (
                       <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem', textAlign: 'center', padding: '0.5rem 0' }}>
                         🎉 All settled up — nobody owes anything.
@@ -302,7 +297,7 @@ export default function Expenses() {
                   </div>
 
                   <h3 style={{ fontWeight: 700, marginBottom: '0.75rem', fontSize: '0.95rem' }}>Balances</h3>
-                  <div className="card">
+                  <div className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
                     {members.map((m) => {
                       const bal = balances[m._id] || 0
                       return (
@@ -325,7 +320,7 @@ export default function Expenses() {
         </>
       )}
 
-      {/* ── Create group modal ── */}
+      {/* Create group modal */}
       <Modal isOpen={createOpen} onClose={() => setCreateOpen(false)} title="New Expense Group">
         <form onSubmit={submitGroup} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <Input label="Group name" placeholder="e.g. Goa Trip 2026" value={groupName} onChange={(e) => setGroupName(e.target.value)} required />
@@ -336,7 +331,7 @@ export default function Expenses() {
         </form>
       </Modal>
 
-      {/* ── Add member modal ── */}
+      {/* Add member modal */}
       <Modal isOpen={memberOpen} onClose={() => setMemberOpen(false)} title="Add a member">
         <form onSubmit={submitMember} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <Input label="Member email" type="email" placeholder="friend@mail.com" value={memberEmail} onChange={(e) => setMemberEmail(e.target.value)} required helperText="They must already have a TripSetGo account." />
@@ -344,7 +339,7 @@ export default function Expenses() {
         </form>
       </Modal>
 
-      {/* ── Add expense modal ── */}
+      {/* Add expense modal */}
       <Modal isOpen={expenseOpen} onClose={() => setExpenseOpen(false)} title="Add an expense" size="lg">
         <form onSubmit={submitExpense} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
@@ -357,7 +352,7 @@ export default function Expenses() {
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
               {Object.entries(CATEGORY_META).map(([key, meta]) => (
                 <button key={key} type="button" onClick={() => setExp((p) => ({ ...p, category: key }))}
-                  className={`btn btn-sm ${exp.category === key ? 'btn-primary' : 'btn-secondary'}`}>
+                  className={`inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${exp.category === key ? 'bg-gradient-to-br from-primary to-secondary text-white shadow-[0_4px_14px_0_rgba(14,165,233,0.3)]' : 'bg-transparent text-text-primary border border-border hover:border-primary hover:bg-primary/10'}`}>
                   {meta.emoji} {meta.label}
                 </button>
               ))}
@@ -369,7 +364,7 @@ export default function Expenses() {
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
               {members.map((m) => (
                 <button key={m._id} type="button" onClick={() => setExp((p) => ({ ...p, paidBy: m._id }))}
-                  className={`btn btn-sm ${exp.paidBy === m._id ? 'btn-primary' : 'btn-secondary'}`}>
+                  className={`inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${exp.paidBy === m._id ? 'bg-gradient-to-br from-primary to-secondary text-white shadow-[0_4px_14px_0_rgba(14,165,233,0.3)]' : 'bg-transparent text-text-primary border border-border hover:border-primary hover:bg-primary/10'}`}>
                   {m.name}{user && m._id === user._id ? ' (you)' : ''}
                 </button>
               ))}
@@ -381,7 +376,7 @@ export default function Expenses() {
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
               {members.map((m) => (
                 <button key={m._id} type="button" onClick={() => toggleSplit(m._id)}
-                  className={`btn btn-sm ${exp.splitAmong.includes(m._id) ? 'btn-primary' : 'btn-secondary'}`}>
+                  className={`inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${exp.splitAmong.includes(m._id) ? 'bg-gradient-to-br from-primary to-secondary text-white shadow-[0_4px_14px_0_rgba(14,165,233,0.3)]' : 'bg-transparent text-text-primary border border-border hover:border-primary hover:bg-primary/10'}`}>
                   {m.name}
                 </button>
               ))}

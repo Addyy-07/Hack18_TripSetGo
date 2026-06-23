@@ -17,26 +17,17 @@ export default function DashboardLayout() {
   }, [location.pathname])
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--color-bg-primary)' }}>
+    <div className="min-h-screen bg-bg-primary">
       <Navbar onMenuClick={() => setSidebarOpen(o => !o)} />
 
       {/* Mobile backdrop */}
       {sidebarOpen && (
-        <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />
+        <div className="fixed inset-0 top-16 bg-black/60 z-49 backdrop-blur-[2px] md:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
-      <div style={{ display: 'flex', paddingTop: 64 }}>
+      <div className="flex pt-16">
         <Sidebar isOpen={sidebarOpen} />
-        <main
-          className="dashboard-main"
-          style={{
-            flex: 1,
-            marginLeft: 240,
-            padding: '2rem',
-            minHeight: 'calc(100vh - 64px)',
-            overflowX: 'hidden',
-          }}
-        >
+        <main className="flex-1 ml-0 md:ml-[240px] p-8 min-h-[calc(100vh-64px)] overflow-x-hidden">
           <Outlet />
         </main>
       </div>

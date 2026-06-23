@@ -1,4 +1,4 @@
-// src/pages/Dashboard/Map.jsx
+﻿// src/pages/Dashboard/Map.jsx
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { useMapbox } from '@/hooks/useMapbox'
@@ -11,7 +11,6 @@ import api from '@/services/api'
 const LAYER_DEFAULTS = { Hotel: true, Restaurant: true, Attraction: true }
 
 export default function MapPage() {
-  // `map` is a React state value — safe to read in JSX
   const { mapRef, mapContainerRef, map, userLocation, mapLoaded, requestLocation } = useMapbox({
     style: 'mapbox://styles/mapbox/streets-v12',
     zoom: 4,
@@ -24,7 +23,6 @@ export default function MapPage() {
   const [radius, setRadius]                 = useState(20)
 
   // Fetch nearby entities when user location or radius changes
-  // Using a ref to avoid stale closure issues, setLoading moved outside the effect condition
   const abortRef = useRef(null)
 
   useEffect(() => {
@@ -71,7 +69,7 @@ export default function MapPage() {
     ...(activeLayers.Attraction  ? entities.attractions || [] : []),
   ]
 
-  // Demo route: connect first hotel → first attraction if both exist
+  // Demo route: connect first hotel & first attraction if both exist
   const routeCoords = [
     entities.hotels?.[0]?.location?.coordinates,
     entities.attractions?.[0]?.location?.coordinates,
@@ -82,10 +80,10 @@ export default function MapPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 style={{ fontSize: '1.875rem', fontWeight: 800 }}>Explore <span className="gradient-text">Map</span></h1>
+          <h1 style={{ fontSize: '1.875rem', fontWeight: 800 }}>Explore <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">Map</span></h1>
           <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem' }}>Discover hotels, restaurants and attractions near you</p>
         </div>
-        <button id="btn-locate-me" onClick={requestLocation} className="btn btn-primary btn-sm">
+        <button id="btn-locate-me" onClick={requestLocation} className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-xs px-3.5 py-1.5 rounded-md cursor-pointer transition-all duration-200 bg-gradient-to-r from-primary via-secondary to-accent bg-[length:200%_auto] text-white shadow-[0_4px_14px_0_rgba(14,165,233,0.3)] hover:bg-right hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(129,140,248,0.5)] active:translate-y-0 active:scale-[0.98]">
           📍 Locate Me
         </button>
       </div>
@@ -96,7 +94,7 @@ export default function MapPage() {
         <motion.aside
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="glass"
+          className="bg-bg-card/75 backdrop-blur-[20px] border border-border shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]"
           style={{ width: 224, flexShrink: 0, padding: '1.25rem', borderRadius: 'var(--radius-lg)', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}
         >
           <h2 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-text-muted)' }}>Layers</h2>
@@ -104,7 +102,7 @@ export default function MapPage() {
           {[
             { key: 'Hotel',      emoji: '🏨', label: 'Hotels',      color: '#818cf8' },
             { key: 'Restaurant', emoji: '🍽️', label: 'Restaurants', color: '#fbbf24' },
-            { key: 'Attraction', emoji: '🗺️', label: 'Attractions', color: '#34d399' },
+            { key: 'Attraction', emoji: '🎯', label: 'Attractions', color: '#34d399' },
           ].map(({ key, emoji, label, color }) => {
             const active = activeLayers[key]
             return (
@@ -127,7 +125,7 @@ export default function MapPage() {
             )
           })}
 
-          <div className="divider" style={{ margin: 0 }} />
+          <div className="h-px bg-border my-6" style={{ margin: 0 }} />
 
           <div>
             <label style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>Radius: {radius} km</label>
@@ -141,9 +139,9 @@ export default function MapPage() {
             />
           </div>
 
-          <div className="divider" style={{ margin: 0 }} />
+          <div className="h-px bg-border my-6" style={{ margin: 0 }} />
           <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', lineHeight: 1.8 }}>
-            {loading ? '⏳ Loading...' : (
+            {loading ? '⌛ Loading...' : (
               <>
                 {entities.hotels?.length || 0} Hotels<br />
                 {entities.restaurants?.length || 0} Restaurants<br />
@@ -153,11 +151,11 @@ export default function MapPage() {
           </div>
         </motion.aside>
 
-        {/* Map — use `map` (state) not mapRef.current, safe during render */}
+        {/* Map */}
         <div className="flex-1 min-h-0" style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--color-border)' }}>
           <MapContainer ref={mapContainerRef} className="h-full">
 
-            {/* Entity markers — only rendered when map state is set */}
+            {/* Entity markers */}
             {map && mapLoaded && allMarkers.map((entity) => {
               const [lng, lat] = entity.location?.coordinates || []
               if (!lng || !lat) return null

@@ -36,11 +36,11 @@ export default function Signup() {
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', background: 'var(--gradient-hero)', position: 'relative' }}>
       <div style={{ position: 'absolute', top: '15%', right: '15%', width: 280, height: 280, background: 'rgba(99,102,241,0.1)', borderRadius: '50%', filter: 'blur(80px)' }} />
       <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-        className="glass" style={{ width: '100%', maxWidth: 460, padding: '2.5rem', borderRadius: 'var(--radius-xl)' }}>
+        className="bg-bg-glass backdrop-blur-[20px] border border-border shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]" style={{ width: '100%', maxWidth: 460, padding: '2.5rem', borderRadius: 'var(--radius-xl)' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <Link to="/" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
             <span style={{ fontSize: 28 }}>✈️</span>
-            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: '1.3rem' }}>Trip<span className="gradient-text">SetGo</span></span>
+            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: '1.3rem' }}>Trip<span className="bg-gradient-primary bg-clip-text text-transparent">SetGo</span></span>
           </Link>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.25rem' }}>Create your account</h1>
           <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem' }}>Start planning your dream trips today</p>

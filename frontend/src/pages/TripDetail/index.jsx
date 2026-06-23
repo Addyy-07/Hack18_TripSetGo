@@ -9,6 +9,7 @@ import { useTripCollaboration } from '@/hooks/useTripCollaboration'
 import api from '@/services/api'
 import Loader from '@/components/common/Loader'
 import Navbar from '@/components/layout/Navbar'
+import Badge from '@/components/common/Badge'
 
 function InfoChip({ icon, label }) {
   return (
@@ -209,7 +210,7 @@ export default function TripDetail() {
           <div style={{ fontSize: 56, marginBottom: '1rem' }}>🔒</div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.75rem' }}>Trip Unavailable</h1>
           <p style={{ color: 'var(--color-text-secondary)', marginBottom: '2rem' }}>{error}</p>
-          <Link to="/" className="btn btn-primary">Go Home</Link>
+          <Link to="/" className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-sm px-5 py-2.5 rounded-xl border-none cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-gradient-primary bg-[length:200%_auto] text-white shadow-btn hover:bg-right hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(129,140,248,0.5)] active:translate-y-0 active:scale-[0.98] active:shadow-btn">Go Home</Link>
         </div>
       </div>
     )
@@ -252,7 +253,7 @@ export default function TripDetail() {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
                 <h1 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: 900, margin: 0 }}>
-                  {trip.source} → <span className="gradient-text">{trip.destination}</span>
+                  {trip.source} → <span className="bg-gradient-primary bg-clip-text text-transparent">{trip.destination}</span>
                 </h1>
                 {trip.isPublic ? <Globe size={16} title="Public" /> : <Lock size={16} title="Private" />}
               </div>
@@ -271,22 +272,22 @@ export default function TripDetail() {
               {canEdit && (
                 <>
                   {isCustomized ? (
-                    <button onClick={() => setEditMode(!editMode)} className={`btn ${editMode ? 'btn-primary' : 'btn-secondary'} btn-sm`}>
+                    <button onClick={() => setEditMode(!editMode)} className={`inline-flex items-center justify-center gap-2 font-sans font-semibold text-[0.8125rem] px-[0.875rem] py-[0.375rem] rounded-xl cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed ${editMode ? 'bg-gradient-primary bg-[length:200%_auto] text-white shadow-btn hover:bg-right hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(129,140,248,0.5)] active:translate-y-0 active:scale-[0.98] active:shadow-btn' : 'bg-transparent text-text-primary border border-solid border-border hover:border-accent-primary hover:bg-[rgba(99,102,241,0.1)]'}`}>
                       {editMode ? 'Finish Editing' : 'Edit Itinerary'}
                     </button>
                   ) : (
-                    <button onClick={handleInitializeItinerary} className="btn btn-primary btn-sm">
+                    <button onClick={handleInitializeItinerary} className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-[0.8125rem] px-[0.875rem] py-[0.375rem] rounded-xl border-none cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-gradient-primary bg-[length:200%_auto] text-white shadow-btn hover:bg-right hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(129,140,248,0.5)] active:translate-y-0 active:scale-[0.98] active:shadow-btn">
                       Customize Itinerary
                     </button>
                   )}
                   {isOwner && (
-                    <button onClick={() => setInviteModal(true)} className="btn btn-secondary btn-sm" style={{ gap: '0.375rem' }}>
+                    <button onClick={() => setInviteModal(true)} className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-[0.8125rem] px-[0.875rem] py-[0.375rem] rounded-xl border border-solid border-border cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-transparent text-text-primary hover:border-accent-primary hover:bg-[rgba(99,102,241,0.1)]" style={{ gap: '0.375rem' }}>
                       <UserPlus size={14} /> Invite
                     </button>
                   )}
                 </>
               )}
-              <button onClick={copyLink} className="btn btn-secondary btn-sm" style={{ gap: '0.375rem' }}>
+              <button onClick={copyLink} className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-[0.8125rem] px-[0.875rem] py-[0.375rem] rounded-xl border border-solid border-border cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-transparent text-text-primary hover:border-accent-primary hover:bg-[rgba(99,102,241,0.1)]" style={{ gap: '0.375rem' }}>
                 <Copy size={14} />{copied ? 'Copied!' : 'Copy Link'}
               </button>
             </div>
@@ -303,7 +304,7 @@ export default function TripDetail() {
 
         {/* Collaborators List (rendered if visible to owner/editor) */}
         {trip.collaborators?.length > 0 && (
-          <div className="card" style={{ marginBottom: '2rem', padding: '1.25rem' }}>
+          <div className="bg-bg-card border border-border rounded-2xl p-6 transition-all duration-250 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ marginBottom: '2rem', padding: '1.25rem' }}>
             <h3 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Users size={16} /> Collaborators
             </h3>
@@ -312,9 +313,7 @@ export default function TripDetail() {
                 <div key={collab._id} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--color-border)', padding: '0.375rem 0.75rem', borderRadius: '99px' }}>
                   <img src={collab.userId?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${collab.userId?.name}`} alt="" style={{ width: 18, height: 18, borderRadius: '50%' }} />
                   <span style={{ fontSize: '0.8rem', fontWeight: 500 }}>{collab.userId?.name}</span>
-                  <span className={`badge ${collab.status === 'accepted' ? 'badge-green' : 'badge-amber'}`} style={{ fontSize: '0.55rem', padding: '1px 5px' }}>
-                    {collab.status} ({collab.role})
-                  </span>
+                  <Badge label={`${collab.status} (${collab.role})`} variant={collab.status === 'accepted' ? 'success' : 'warning'} className="text-[0.55rem] px-1.5 py-0.5 normal-case" />
                   {isOwner && (
                     <button onClick={() => handleRemoveCollaborator(collab.userId?._id)} style={{ border: 'none', background: 'transparent', color: 'var(--color-accent-red)', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: 0, marginLeft: '0.25rem' }} title="Remove">
                       <X size={12} />
@@ -328,12 +327,12 @@ export default function TripDetail() {
 
         {/* Budget breakdown */}
         {Object.keys(breakdown).length > 0 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }} className="card" style={{ marginBottom: '2rem' }}>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }} className="bg-bg-card border border-border rounded-2xl p-6 transition-all duration-250 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ marginBottom: '2rem' }}>
             <h2 style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '1rem' }}>Budget Breakdown</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '1rem' }}>
               {Object.entries(breakdown).map(([key, val]) => (
                 <div key={key} style={{ textAlign: 'center' }}>
-                  <p style={{ fontSize: '1.1rem', fontWeight: 800 }} className="gradient-text">₹{Number(val).toLocaleString()}</p>
+                  <p style={{ fontSize: '1.1rem', fontWeight: 800 }} className="bg-gradient-primary bg-clip-text text-transparent">₹{Number(val).toLocaleString()}</p>
                   <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', textTransform: 'capitalize' }}>{key}</p>
                 </div>
               ))}
@@ -346,24 +345,24 @@ export default function TripDetail() {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <h2 style={{ fontWeight: 700, fontSize: '1.25rem' }}>
-                Collaborative <span className="gradient-text">Itinerary</span>
+                Collaborative <span className="bg-gradient-primary bg-clip-text text-transparent">Itinerary</span>
               </h2>
               {editMode && (
-                <button onClick={handleAddDay} className="btn btn-secondary btn-sm" style={{ gap: '0.25rem' }}>
+                <button onClick={handleAddDay} className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-[0.8125rem] px-[0.875rem] py-[0.375rem] rounded-xl border border-solid border-border cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-transparent text-text-primary hover:border-accent-primary hover:bg-[rgba(99,102,241,0.1)]" style={{ gap: '0.25rem' }}>
                   <Plus size={14} /> Add Day
                 </button>
               )}
             </div>
 
             {trip.itinerary.map((day) => (
-              <div key={day._id || day.day} className="card" style={{ marginBottom: '1.5rem', position: 'relative' }}>
+              <div key={day._id || day.day} className="bg-bg-card border border-border rounded-2xl p-6 transition-all duration-250 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ marginBottom: '1.5rem', position: 'relative' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                   <p style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--color-text-primary)' }}>
                     Day {day.day}
                     {day.date && <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', fontWeight: 400, marginLeft: '0.5rem' }}>{new Date(day.date).toLocaleDateString()}</span>}
                   </p>
                   {editMode && (
-                    <button onClick={() => handleDeleteDay(day.day)} className="btn btn-ghost btn-sm" style={{ color: 'var(--color-accent-red)', padding: '4px' }} title="Delete Day">
+                    <button onClick={() => handleDeleteDay(day.day)} className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-[0.8125rem] px-[0.875rem] py-[0.375rem] rounded-xl cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-transparent text-text-secondary hover:bg-[rgba(255,255,255,0.05)] hover:text-text-primary disabled:opacity-50 disabled:cursor-not-allowed" style={{ color: 'var(--color-accent-red)', padding: '4px' }} title="Delete Day">
                       <Trash2 size={15} />
                     </button>
                   )}
@@ -383,7 +382,7 @@ export default function TripDetail() {
                       </div>
 
                       {editMode && (
-                        <button onClick={() => handleDeleteActivity(day.day, actIdx)} style={{ border: 'none', background: 'transparent', color: 'var(--color-text-muted)', cursor: 'pointer', padding: '4px' }} className="btn-hover-red">
+                        <button onClick={() => handleDeleteActivity(day.day, actIdx)} style={{ border: 'none', background: 'transparent', color: 'var(--color-text-muted)', cursor: 'pointer', padding: '4px' }} className="transition-colors duration-150 hover:text-accent-red">
                           <Trash2 size={13} />
                         </button>
                       )}
@@ -395,22 +394,22 @@ export default function TripDetail() {
                 {editMode && (
                   <div style={{ marginTop: '0.75rem' }}>
                     {newActivityDay === day.day ? (
-                      <div className="glass" style={{ padding: '1rem', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      <div className="bg-bg-glass backdrop-blur-[20px] border border-border shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]" style={{ padding: '1rem', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '0.5rem' }}>
-                          <input type="text" placeholder="Activity name..." className="input" style={{ padding: '0.5rem' }} value={activityForm.name} onChange={e => setActivityForm(prev => ({ ...prev, name: e.target.value }))} />
-                          <input type="number" placeholder="Cost (₹)..." className="input" style={{ padding: '0.5rem' }} value={activityForm.cost} onChange={e => setActivityForm(prev => ({ ...prev, cost: e.target.value }))} />
+                          <input type="text" placeholder="Activity name..." className="w-full bg-surface border border-border rounded-xl text-text-primary font-sans text-[0.9375rem] px-4 py-3 outline-none transition-all duration-150 placeholder-text-muted focus:border-primary focus:shadow-[0_0_0_3px_rgba(14,165,233,0.2)] disabled:opacity-50 disabled:cursor-not-allowed" style={{ padding: '0.5rem' }} value={activityForm.name} onChange={e => setActivityForm(prev => ({ ...prev, name: e.target.value }))} />
+                          <input type="number" placeholder="Cost (₹)..." className="w-full bg-surface border border-border rounded-xl text-text-primary font-sans text-[0.9375rem] px-4 py-3 outline-none transition-all duration-150 placeholder-text-muted focus:border-primary focus:shadow-[0_0_0_3px_rgba(14,165,233,0.2)] disabled:opacity-50 disabled:cursor-not-allowed" style={{ padding: '0.5rem' }} value={activityForm.cost} onChange={e => setActivityForm(prev => ({ ...prev, cost: e.target.value }))} />
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-                          <input type="time" className="input" style={{ padding: '0.5rem' }} value={activityForm.startTime} onChange={e => setActivityForm(prev => ({ ...prev, startTime: e.target.value }))} />
-                          <input type="text" placeholder="Description/notes..." className="input" style={{ padding: '0.5rem' }} value={activityForm.notes} onChange={e => setActivityForm(prev => ({ ...prev, notes: e.target.value }))} />
+                          <input type="time" className="w-full bg-surface border border-border rounded-xl text-text-primary font-sans text-[0.9375rem] px-4 py-3 outline-none transition-all duration-150 placeholder-text-muted focus:border-primary focus:shadow-[0_0_0_3px_rgba(14,165,233,0.2)] disabled:opacity-50 disabled:cursor-not-allowed" style={{ padding: '0.5rem' }} value={activityForm.startTime} onChange={e => setActivityForm(prev => ({ ...prev, startTime: e.target.value }))} />
+                          <input type="text" placeholder="Description/notes..." className="w-full bg-surface border border-border rounded-xl text-text-primary font-sans text-[0.9375rem] px-4 py-3 outline-none transition-all duration-150 placeholder-text-muted focus:border-primary focus:shadow-[0_0_0_3px_rgba(14,165,233,0.2)] disabled:opacity-50 disabled:cursor-not-allowed" style={{ padding: '0.5rem' }} value={activityForm.notes} onChange={e => setActivityForm(prev => ({ ...prev, notes: e.target.value }))} />
                         </div>
                         <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                          <button onClick={() => handleAddActivity(day.day)} className="btn btn-primary btn-sm" style={{ padding: '4px 12px' }}>Save</button>
-                          <button onClick={() => setNewActivityDay(null)} className="btn btn-secondary btn-sm" style={{ padding: '4px 12px' }}>Cancel</button>
+                          <button onClick={() => handleAddActivity(day.day)} className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-[0.8125rem] px-[0.875rem] py-[0.375rem] rounded-xl border-none cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-gradient-primary bg-[length:200%_auto] text-white shadow-btn hover:bg-right hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(129,140,248,0.5)] active:translate-y-0 active:scale-[0.98] active:shadow-btn" style={{ padding: '4px 12px' }}>Save</button>
+                          <button onClick={() => setNewActivityDay(null)} className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-[0.8125rem] px-[0.875rem] py-[0.375rem] rounded-xl border border-solid border-border cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-transparent text-text-primary hover:border-accent-primary hover:bg-[rgba(99,102,241,0.1)]" style={{ padding: '4px 12px' }}>Cancel</button>
                         </div>
                       </div>
                     ) : (
-                      <button onClick={() => { setNewActivityDay(day.day); setActivityForm({ name: '', notes: '', cost: '', startTime: '' }) }} className="btn btn-ghost btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', width: '100%', justifyContent: 'center', background: 'rgba(255,255,255,0.01)', border: '1px dashed var(--color-border)' }}>
+                      <button onClick={() => { setNewActivityDay(day.day); setActivityForm({ name: '', notes: '', cost: '', startTime: '' }) }} className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-[0.8125rem] px-[0.875rem] py-[0.375rem] rounded-xl cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-transparent text-text-secondary hover:bg-[rgba(255,255,255,0.05)] hover:text-text-primary disabled:opacity-50 disabled:cursor-not-allowed" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', width: '100%', justifyContent: 'center', background: 'rgba(255,255,255,0.01)', border: '1px dashed var(--color-border)' }}>
                         <Plus size={14} /> Add Activity
                       </button>
                     )}
@@ -425,12 +424,12 @@ export default function TripDetail() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                 <h2 style={{ fontWeight: 700, fontSize: '1.25rem' }}>
-                  AI Recommended <span className="gradient-text">Itinerary</span>
+                  AI Recommended <span className="bg-gradient-primary bg-clip-text text-transparent">Itinerary</span>
                 </h2>
               </div>
               
               {plan.itinerary.map(day => (
-                <div key={day.day} className="card" style={{ marginBottom: '1rem' }}>
+                <div key={day.day} className="bg-bg-card border border-border rounded-2xl p-6 transition-all duration-250 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ marginBottom: '1rem' }}>
                   <p style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '1rem', color: 'var(--color-text-primary)' }}>
                     Day {day.day}
                     {day.date && <span style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)', fontWeight: 400, marginLeft: '0.5rem' }}>{new Date(day.date).toLocaleDateString()}</span>}
@@ -466,7 +465,7 @@ export default function TripDetail() {
             <h2 style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '1rem' }}>AI Tips</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.75rem' }}>
               {plan.ai_suggestions.map((s, i) => (
-                <div key={i} className="glass" style={{ borderRadius: 'var(--radius-md)', padding: '1rem', display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                <div key={i} className="bg-bg-glass backdrop-blur-[20px] border border-border shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]" style={{ borderRadius: 'var(--radius-md)', padding: '1rem', display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
                   <span style={{ fontSize: '1.25rem' }}>{s.icon}</span>
                   <div>
                     <p style={{ fontWeight: 700, fontSize: '0.875rem', marginBottom: '0.25rem' }}>{s.title}</p>
@@ -484,7 +483,7 @@ export default function TripDetail() {
         {inviteModal && (
           <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
             <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
-              className="card" style={{ width: '90%', maxWidth: '450px', background: 'var(--color-bg-card)', padding: '2rem' }}>
+              className="bg-bg-card border border-border rounded-2xl p-6 transition-all duration-250 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ width: '90%', maxWidth: '450px', background: 'var(--color-bg-card)', padding: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                 <h3 style={{ fontWeight: 800, fontSize: '1.2rem' }}>Invite Collaborator</h3>
                 <button onClick={() => setInviteModal(false)} style={{ background: 'transparent', border: 'none', color: 'var(--color-text-secondary)', cursor: 'pointer' }}><X size={18} /></button>
@@ -493,16 +492,16 @@ export default function TripDetail() {
               <form onSubmit={handleInvite} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-text-secondary)', marginBottom: '0.375rem' }}>User Email</label>
-                  <input type="email" required placeholder="collaborator@example.com" className="input" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} />
+                  <input type="email" required placeholder="collaborator@example.com" className="w-full bg-surface border border-border rounded-xl text-text-primary font-sans text-[0.9375rem] px-4 py-3 outline-none transition-all duration-150 placeholder-text-muted focus:border-primary focus:shadow-[0_0_0_3px_rgba(14,165,233,0.2)] disabled:opacity-50 disabled:cursor-not-allowed" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} />
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-text-secondary)', marginBottom: '0.375rem' }}>Permission Role</label>
-                  <select className="input" value={inviteRole} onChange={e => setInviteRole(e.target.value)}>
+                  <select className="w-full bg-surface border border-border rounded-xl text-text-primary font-sans text-[0.9375rem] px-4 py-3 outline-none transition-all duration-150 placeholder-text-muted focus:border-primary focus:shadow-[0_0_0_3px_rgba(14,165,233,0.2)] disabled:opacity-50 disabled:cursor-not-allowed" value={inviteRole} onChange={e => setInviteRole(e.target.value)}>
                     <option value="editor">Editor (Can edit itinerary)</option>
                     <option value="viewer">Viewer (Read-only)</option>
                   </select>
                 </div>
-                <button type="submit" disabled={inviting} className="btn btn-primary" style={{ width: '100%', marginTop: '0.5rem' }}>
+                <button type="submit" disabled={inviting} className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-sm px-5 py-2.5 rounded-xl border-none cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-gradient-primary bg-[length:200%_auto] text-white shadow-btn hover:bg-right hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(129,140,248,0.5)] active:translate-y-0 active:scale-[0.98] active:shadow-btn disabled:opacity-50 disabled:cursor-not-allowed" style={{ width: '100%', marginTop: '0.5rem' }}>
                   {inviting ? 'Sending Invite...' : 'Send Invitation'}
                 </button>
               </form>

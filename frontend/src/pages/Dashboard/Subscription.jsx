@@ -80,7 +80,7 @@ export default function Subscription() {
   }
 
   return (
-    <div className="page-enter max-w-[1000px] mx-auto pb-16">
+    <div className="animate-fadeIn max-w-[1000px] mx-auto pb-16">
       
       {/* Visual Header */}
       <div className="text-center mb-14 relative">
@@ -88,7 +88,7 @@ export default function Subscription() {
         <div className="absolute top-[-50%] left-1/2 -translate-x-1/2 w-[300px] h-[200px] bg-[radial-gradient(circle,rgba(14,165,233,0.15)_0%,transparent_70%)] blur-[40px] pointer-events-none z-0" />
 
         <h1 className="text-4xl font-black mb-3 font-['Plus_Jakarta_Sans',sans-serif] z-10 relative">
-          Choose Your Perfect <span className="gradient-text">Adventure Plan</span>
+          Choose Your Perfect <span className="bg-gradient-primary bg-clip-text text-transparent">Adventure Plan</span>
         </h1>
         <p className="text-text-secondary text-base max-w-[500px] mx-auto z-10 relative">
           Unlock Gemini-powered itineraries, interactive route maps, and real-time group expense splitting.
@@ -103,7 +103,7 @@ export default function Subscription() {
 
       {/* High-Tech Usage Tracker */}
       {subscription.usage && (
-        <div className="glass max-w-[540px] mx-auto mb-16 p-6 rounded-3xl border border-[rgba(14,165,233,0.15)] shadow-[0_8px_32px_rgba(0,0,0,0.35)] bg-[rgba(17,24,39,0.7)]">
+        <div className="bg-bg-glass backdrop-blur-[20px] border border-border shadow-[inset_0_0_20px_rgba(255,255,255,0.02)] max-w-[540px] mx-auto mb-16 p-6 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.35)] bg-[rgba(17,24,39,0.7)]">
           <div className="flex justify-between items-center mb-3">
             <div>
               <p className="font-extrabold text-[0.95rem] m-0">Today's Account Usage</p>
@@ -188,7 +188,7 @@ export default function Subscription() {
                   )}
                 </div>
 
-                <div className="divider my-0 mb-6" />
+                <div className="h-[1px] bg-border my-0 mb-6" />
 
                 {/* Features List */}
                 <ul className="list-none flex flex-col gap-3 mb-10 p-0">
@@ -240,7 +240,7 @@ export default function Subscription() {
             return (
               <div 
                 key={index} 
-                className="glass rounded-xl border border-solid border-[rgba(255,255,255,0.05)] bg-[rgba(17,24,39,0.5)] overflow-hidden transition-colors duration-150 ease-out"
+                className="bg-bg-glass backdrop-blur-[20px] border border-border shadow-[inset_0_0_20px_rgba(255,255,255,0.02)] rounded-xl overflow-hidden transition-colors duration-150 ease-out"
               >
                 {/* Question Row */}
                 <button

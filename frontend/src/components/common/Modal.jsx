@@ -42,7 +42,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md', h
             animate={{ scale: 1,    opacity: 1, y: 0 }}
             exit={{ scale: 0.95,    opacity: 0, y: 20 }}
             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-            className="glass"
+            className="bg-bg-glass backdrop-blur-[20px] border border-border shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]"
             style={{
               width: '100%',
               maxWidth: maxWidths[size] || 560,
@@ -59,7 +59,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md', h
                 {!hideClose && (
                   <button
                     onClick={onClose}
-                    className="btn btn-ghost btn-sm"
+                    className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-[0.8125rem] px-[0.875rem] py-[0.375rem] rounded-xl cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-transparent text-text-secondary hover:bg-[rgba(255,255,255,0.05)] hover:text-text-primary disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{ marginLeft: 'auto', borderRadius: '50%', padding: '0.375rem' }}
                     aria-label="Close"
                   >

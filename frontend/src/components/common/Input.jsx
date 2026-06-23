@@ -23,7 +23,7 @@ const Input = forwardRef(function Input(
           ref={ref}
           id={inputId}
           type={type}
-          className={`input ${error ? 'input-error' : ''} ${className}`}
+          className={`w-full bg-surface border border-border rounded-xl text-text-primary font-sans text-[0.9375rem] px-4 py-3 outline-none transition-all duration-150 ease-in-out placeholder:text-text-muted focus:border-primary focus:shadow-[0_0_0_3px_rgba(14,165,233,0.2)] disabled:opacity-50 disabled:cursor-not-allowed ${error ? '!border-accent-red' : ''} ${className}`}
           style={{ paddingLeft: icon ? '2.5rem' : undefined, paddingRight: iconRight ? '2.5rem' : undefined }}
           {...props}
         />

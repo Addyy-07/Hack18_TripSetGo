@@ -33,37 +33,19 @@ export default function Navbar({ onMenuClick }) {
       {/* Hamburger — only in dashboard (when onMenuClick provided), mobile only via CSS */}
       {onMenuClick && (
         <button
-          className="hamburger-btn"
+          className="flex items-center justify-center p-1.5 bg-[rgba(99,102,241,0.15)] border border-solid border-[rgba(99,102,241,0.25)] rounded-md text-text-primary cursor-pointer mr-1 max-md:!flex md:hidden"
           onClick={onMenuClick}
           aria-label="Toggle menu"
-          style={{
-            background: 'rgba(99,102,241,0.15)',
-            border: '1px solid rgba(99,102,241,0.25)',
-            borderRadius: 'var(--radius-md)',
-            color: 'var(--color-text-primary)',
-            padding: '0.375rem',
-            cursor: 'pointer',
-            alignItems: 'center',
-            justifyContent: 'center',
-            display: 'none', // shown via CSS @media
-            marginRight: '0.25rem',
-          }}
         >
           <Menu size={20} />
         </button>
       )}
 
       {/* Logo */}
-      <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
-        <div style={{
-          width: 32, height: 32,
-          background: 'var(--gradient-primary)',
-          borderRadius: 8,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 16,
-        }}>✈️</div>
-        <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: '1.25rem', letterSpacing: '-0.02em' }}>
-          Trip<span className="gradient-text">SetGo</span>
+      <Link to="/" className="flex items-center gap-2 no-underline">
+        <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center text-base">✈️</div>
+        <span className="font-['Plus_Jakarta_Sans',sans-serif] font-extrabold text-xl tracking-tighter">
+          Trip<span className="bg-gradient-primary bg-clip-text text-transparent">SetGo</span>
         </span>
       </Link>
 
@@ -85,13 +67,11 @@ export default function Navbar({ onMenuClick }) {
                 </span>
                 <ChevronDown size={14} color="var(--color-text-muted)" />
               </button>
-
               {dropOpen && (
-                <div className="glass animate-fadeIn" style={{
+                <div className="bg-bg-glass backdrop-blur-[20px] border border-solid border-border shadow-card animate-fadeIn" style={{
                   position: 'absolute', top: '110%', right: 0,
                   width: 200, borderRadius: 'var(--radius-md)',
                   padding: '0.5rem',
-                  boxShadow: 'var(--shadow-card)',
                   zIndex: 100,
                   transformOrigin: 'top right'
                 }}>
@@ -123,8 +103,8 @@ export default function Navbar({ onMenuClick }) {
           </>
         ) : (
           <>
-            <Link to="/auth/login"  className="btn btn-ghost btn-sm">Sign In</Link>
-            <Link to="/auth/signup" className="btn btn-primary btn-sm">Get Started</Link>
+            <Link to="/auth/login" className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-[0.8125rem] px-[0.875rem] py-[0.375rem] rounded-xl border-none cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-transparent text-text-secondary hover:bg-[rgba(255,255,255,0.05)] hover:text-text-primary">Sign In</Link>
+            <Link to="/auth/signup" className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-[0.8125rem] px-[0.875rem] py-[0.375rem] rounded-xl border-none cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-gradient-primary bg-[length:200%_auto] text-white shadow-btn hover:bg-right hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(129,140,248,0.5)] active:translate-y-0 active:scale-[0.98] active:shadow-btn">Get Started</Link>
           </>
         )}
       </div>

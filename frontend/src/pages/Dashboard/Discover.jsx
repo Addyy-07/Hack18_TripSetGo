@@ -63,7 +63,7 @@ function TripCard({ trip }) {
   const coverImg = getDestinationImage(trip.destination || '')
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-      className="card card-hover" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      className="bg-bg-card border border-border rounded-2xl p-6 transition-all duration-250 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] hover:border-border-hover hover:-translate-y-1 hover:shadow-glow-strong hover:shadow-card hover:bg-[rgba(14,21,41,0.9)]" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       {/* Destination photo header */}
       <div style={{ height: 120, borderRadius: 'var(--radius-md)', background: `url(${coverImg}) center center/cover no-repeat`, display: 'flex', alignItems: 'flex-end', padding: '1rem', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(8, 17, 34, 0.9) 0%, rgba(8, 17, 34, 0.2) 100%)' }} />
@@ -94,17 +94,17 @@ function TripCard({ trip }) {
       {/* Actions */}
       <div style={{ display: 'flex', gap: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid var(--color-border)' }}>
         <button onClick={() => dispatch(discoverLikeTrip(trip._id))}
-          className="btn btn-ghost btn-sm" style={{ color: trip.isLiked ? '#f87171' : undefined }}>
+          className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-[0.8125rem] px-[0.875rem] py-[0.375rem] rounded-xl cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-transparent text-text-secondary hover:bg-[rgba(255,255,255,0.05)] hover:text-text-primary disabled:opacity-50 disabled:cursor-not-allowed" style={{ color: trip.isLiked ? '#f87171' : undefined }}>
           <Heart size={15} fill={trip.isLiked ? 'currentColor' : 'none'} /> {trip.likesCount || 0}
         </button>
         <button onClick={() => dispatch(discoverSaveTrip(trip._id))}
-          className="btn btn-ghost btn-sm" style={{ color: trip.isSaved ? '#fbbf24' : undefined }}>
+          className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-[0.8125rem] px-[0.875rem] py-[0.375rem] rounded-xl cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-transparent text-text-secondary hover:bg-[rgba(255,255,255,0.05)] hover:text-text-primary disabled:opacity-50 disabled:cursor-not-allowed" style={{ color: trip.isSaved ? '#fbbf24' : undefined }}>
           <Bookmark size={15} fill={trip.isSaved ? 'currentColor' : 'none'} /> {trip.savesCount || 0}
         </button>
-        <button className="btn btn-ghost btn-sm">
+        <button className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-[0.8125rem] px-[0.875rem] py-[0.375rem] rounded-xl cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-transparent text-text-secondary hover:bg-[rgba(255,255,255,0.05)] hover:text-text-primary disabled:opacity-50 disabled:cursor-not-allowed">
           <MessageCircle size={15} /> {trip.commentsCount || 0}
         </button>
-        <button onClick={() => dispatch(cloneTrip(trip._id))} className="btn btn-ghost btn-sm" style={{ marginLeft: 'auto' }}>
+        <button onClick={() => dispatch(cloneTrip(trip._id))} className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-[0.8125rem] px-[0.875rem] py-[0.375rem] rounded-xl cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-transparent text-text-secondary hover:bg-[rgba(255,255,255,0.05)] hover:text-text-primary disabled:opacity-50 disabled:cursor-not-allowed" style={{ marginLeft: 'auto' }}>
           <Copy size={15} /> Clone
         </button>
       </div>
@@ -148,10 +148,10 @@ export default function Discover() {
   const displayFeed = useSelector(s => s.discover.searchResults || s.discover.feed)
 
   return (
-    <div className="page-enter">
+    <div className="animate-fadeIn">
       <div style={{ marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '1.875rem', fontWeight: 800, marginBottom: '0.25rem' }}>
-          Discover <span className="gradient-text">Trips</span>
+          Discover <span className="bg-gradient-primary bg-clip-text text-transparent">Trips</span>
         </h1>
         <p style={{ color: 'var(--color-text-secondary)' }}>Browse, like, and clone trips from the community</p>
       </div>
@@ -167,7 +167,7 @@ export default function Discover() {
           />
         </div>
         <select
-          className="input"
+          className="bg-surface border border-border rounded-xl text-text-primary font-sans text-[0.9375rem] px-4 py-3 outline-none transition-all duration-150 placeholder-text-muted focus:border-primary focus:shadow-[0_0_0_3px_rgba(14,165,233,0.2)]"
           style={{ width: 160, background: 'var(--color-bg-card)', color: 'var(--color-text-primary)', cursor: 'pointer' }}
           value={filters.sortBy}
           onChange={e => dispatch(setFilters({ sortBy: e.target.value }))}

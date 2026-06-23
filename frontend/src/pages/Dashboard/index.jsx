@@ -32,11 +32,11 @@ export default function Dashboard() {
   const recentTrips = trips.slice(0, 4)
 
   return (
-    <div className="page-enter">
+    <div className="animate-fadeIn">
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '1.875rem', fontWeight: 800, marginBottom: '0.25rem' }}>
-          Welcome back, <span className="gradient-text">{user?.name?.split(' ')[0]} 👋</span>
+          Welcome back, <span className="bg-gradient-primary bg-clip-text text-transparent">{user?.name?.split(' ')[0]} 👋</span>
         </h1>
         <p style={{ color: 'var(--color-text-secondary)' }}>Ready to plan your next adventure?</p>
       </div>
@@ -44,12 +44,12 @@ export default function Dashboard() {
       {/* Subscription banner */}
       {subscription.plan === 'free' && (
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
-          className="glass" style={{ marginBottom: '2rem', padding: '1rem 1.5rem', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderLeft: '3px solid var(--color-accent-primary)' }}>
+          className="bg-bg-glass backdrop-blur-[20px] border border-border shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]" style={{ marginBottom: '2rem', padding: '1rem 1.5rem', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderLeft: '3px solid var(--color-accent-primary)' }}>
           <div>
             <p style={{ fontWeight: 600, marginBottom: '0.125rem' }}>✨ Upgrade to Pro</p>
             <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.875rem' }}>Unlimited trip planning, priority AI, and more.</p>
           </div>
-          <Link to="/dashboard/subscription" className="btn btn-primary btn-sm">Upgrade <ArrowRight size={14} /></Link>
+          <Link to="/dashboard/subscription" className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-[0.8125rem] px-[0.875rem] py-[0.375rem] rounded-xl border-none cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-gradient-primary bg-[length:200%_auto] text-white shadow-btn hover:bg-right hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(129,140,248,0.5)] active:translate-y-0 active:scale-[0.98] active:shadow-btn">Upgrade <ArrowRight size={14} /></Link>
         </motion.div>
       )}
 
@@ -60,7 +60,7 @@ export default function Dashboard() {
           {quickActions.map((action, i) => (
             <motion.div key={action.label} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }}>
               <Link to={action.to} style={{ textDecoration: 'none', display: 'block' }}>
-                <div className="card card-hover" style={{ textAlign: 'center', padding: '1.75rem 1rem', cursor: 'pointer' }}>
+                <div className="bg-bg-card border border-border rounded-2xl p-6 transition-all duration-250 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] hover:border-border-hover hover:-translate-y-1 hover:shadow-glow-strong hover:shadow-card hover:bg-[rgba(14,21,41,0.9)]" style={{ textAlign: 'center', padding: '1.75rem 1rem', cursor: 'pointer' }}>
                   <div style={{ width: 52, height: 52, background: `${action.color}20`, border: `1px solid ${action.color}40`, borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: action.color, margin: '0 auto 1rem' }}>
                     {action.icon}
                   </div>
@@ -86,11 +86,11 @@ export default function Dashboard() {
             {[1,2,3,4].map(i => <SkeletonCard key={i} />)}
           </div>
         ) : recentTrips.length === 0 ? (
-          <div className="card" style={{ textAlign: 'center', padding: '3rem' }}>
+          <div className="bg-bg-card border border-border rounded-2xl p-6 transition-all duration-250 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ textAlign: 'center', padding: '3rem' }}>
             <div style={{ fontSize: 48, marginBottom: '1rem' }}>✈️</div>
             <h3 style={{ fontWeight: 700, marginBottom: '0.5rem' }}>No trips yet</h3>
             <p style={{ color: 'var(--color-text-secondary)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>Plan your first AI-powered trip in seconds!</p>
-            <Link to="/dashboard/planner" className="btn btn-primary">
+            <Link to="/dashboard/planner" className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-sm px-5 py-2.5 rounded-xl border-none cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-gradient-primary bg-[length:200%_auto] text-white shadow-btn hover:bg-right hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(129,140,248,0.5)] active:translate-y-0 active:scale-[0.98] active:shadow-btn">
               <Plus size={16} /> Plan Your First Trip
             </Link>
           </div>
@@ -98,7 +98,7 @@ export default function Dashboard() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
             {recentTrips.map((trip, i) => (
               <motion.div key={trip._id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
-                <div className="card card-hover">
+                <div className="bg-bg-card border border-border rounded-2xl p-6 transition-all duration-250 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] hover:border-border-hover hover:-translate-y-1 hover:shadow-glow-strong hover:shadow-card hover:bg-[rgba(14,21,41,0.9)]">
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.875rem' }}>
                     <div>
                       <p style={{ fontWeight: 700, marginBottom: '0.25rem' }}>{trip.destination}</p>

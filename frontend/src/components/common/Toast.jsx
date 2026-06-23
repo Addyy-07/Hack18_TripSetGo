@@ -31,7 +31,7 @@ export function Toast({ id, type = 'info', message, onDismiss, duration = 4000 }
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, x: 60, scale: 0.95 }}
       transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-      className="glass"
+      className="bg-bg-glass backdrop-blur-[20px] border border-border shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]"
       style={{
         display: 'flex', alignItems: 'center', gap: '0.75rem',
         padding: '0.875rem 1.25rem',

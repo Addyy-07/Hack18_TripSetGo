@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchReviews, deleteReview, selectAdmin, clearAdminSuccess } from '@/features/admin/adminSlice'
 import { Star, Trash2, ShieldAlert, CheckCircle, Flag, MessageSquare } from 'lucide-react'
 import Loader from '@/components/common/Loader'
+import Badge from '@/components/common/Badge'
 
 export default function AdminReviews() {
   const dispatch = useDispatch()
@@ -31,23 +32,23 @@ export default function AdminReviews() {
   }
 
   return (
-    <div className="page-enter">
+    <div className="animate-fadeIn">
       {/* Title */}
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '1.875rem', fontWeight: 800, marginBottom: '0.25rem' }}>Manage <span className="gradient-text">Reviews</span></h1>
+        <h1 style={{ fontSize: '1.875rem', fontWeight: 800, marginBottom: '0.25rem' }}>Manage <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">Reviews</span></h1>
         <p style={{ color: 'var(--color-text-secondary)' }}>Moderate community reviews, handle reported content, and purge spam</p>
       </div>
 
       {/* Success Notification Alert */}
       {successMessage && (
-        <div className="card" style={{ padding: '1rem', borderColor: '#10b981', background: 'rgba(16, 185, 129, 0.05)', color: '#10b981', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ padding: '1rem', borderColor: '#10b981', background: 'rgba(16, 185, 129, 0.05)', color: '#10b981', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <CheckCircle size={18} />
           <span style={{ fontSize: '0.875rem', fontWeight: 600 }}>{successMessage}</span>
         </div>
       )}
 
       {/* Filters Card */}
-      <div className="card" style={{ padding: '1.25rem', marginBottom: '2rem', display: 'flex', gap: '1.25rem', flexWrap: 'wrap', alignItems: 'center' }}>
+      <div className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ padding: '1.25rem', marginBottom: '2rem', display: 'flex', gap: '1.25rem', flexWrap: 'wrap', alignItems: 'center' }}>
         {/* Flag filter */}
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontWeight: 600, fontSize: '0.875rem' }}>
           <input
@@ -62,7 +63,7 @@ export default function AdminReviews() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>Filter by rating:</span>
           <select
-            className="input"
+            className="bg-surface border border-border rounded-md text-text-primary font-sans text-[0.9375rem] px-4 py-3 transition-all duration-150 outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(14,165,233,0.2)]"
             value={minRating}
             onChange={(e) => { setMinRating(Number(e.target.value)); setPage(1) }}
             style={{ width: 'auto', padding: '0.25rem 0.5rem' }}
@@ -81,7 +82,7 @@ export default function AdminReviews() {
       {loading ? (
         <Loader text="Fetching reviews..." />
       ) : reviews.length === 0 ? (
-        <div className="card" style={{ padding: '4rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>
+        <div className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ padding: '4rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>
           <MessageSquare size={40} style={{ margin: '0 auto 1rem', opacity: 0.5 }} />
           <p style={{ fontWeight: 600 }}>No reviews match this criteria</p>
         </div>
@@ -90,7 +91,7 @@ export default function AdminReviews() {
           {reviews.map((review) => {
             const isReported = review.reportedBy && review.reportedBy.length > 0
             return (
-              <div key={review._id} className="card" style={{ padding: '1.5rem', borderColor: isReported ? '#ef4444' : 'var(--color-border)' }}>
+              <div key={review._id} className="bg-bg-card border border-border rounded-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ padding: '1.5rem', borderColor: isReported ? '#ef4444' : 'var(--color-border)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
                   
                   {/* User & Rating */}
@@ -124,12 +125,10 @@ export default function AdminReviews() {
                   {/* Badges / Danger Area */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     {isReported && (
-                      <span className="badge badge-danger" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                        <ShieldAlert size={12} /> {review.reportedBy.length} Reports
-                      </span>
+                      <Badge label={`${review.reportedBy.length} Reports`} variant="danger" icon={<ShieldAlert size={12} />} />
                     )}
                     <button
-                      className="btn btn-danger"
+                      className="inline-flex items-center justify-center p-2 rounded-lg bg-red-500/15 text-red-500 border border-red-500/30 hover:bg-red-500/25 transition-all cursor-pointer"
                       onClick={() => handleDeleteReview(review._id)}
                       style={{ padding: '0.5rem', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                     >
@@ -150,7 +149,7 @@ export default function AdminReviews() {
                 {/* Date */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.25rem', borderTop: '1px solid var(--color-border)', paddingTop: '0.75rem', fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
                   <span>Created {new Date(review.createdAt).toLocaleString()}</span>
-                  {review.isVerifiedVisit && <span className="badge badge-success">Verified Visit</span>}
+                  {review.isVerifiedVisit && <Badge label="Verified Visit" variant="success" />}
                 </div>
               </div>
             )
@@ -162,7 +161,7 @@ export default function AdminReviews() {
       {reviewsPagination && reviewsPagination.totalPages > 1 && (
         <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: '1rem' }}>
           <button
-            className="btn btn-secondary"
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer border border-border bg-transparent text-text-primary hover:border-primary/45 hover:bg-white/5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={page === 1}
             onClick={() => setPage(page - 1)}
           >
@@ -172,7 +171,7 @@ export default function AdminReviews() {
             Page {page} of {reviewsPagination.totalPages}
           </span>
           <button
-            className="btn btn-secondary"
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer border border-border bg-transparent text-text-primary hover:border-primary/45 hover:bg-white/5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={page === reviewsPagination.totalPages}
             onClick={() => setPage(page + 1)}
           >

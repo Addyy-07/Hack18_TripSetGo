@@ -36,7 +36,7 @@ export default class ErrorBoundary extends Component {
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: '2rem', background: 'var(--gradient-hero)', textAlign: 'center',
       }}>
-        <div className="glass" style={{ maxWidth: 460, padding: '3rem 2rem', borderRadius: 'var(--radius-xl)' }}>
+        <div className="bg-bg-glass backdrop-blur-[20px] border border-border shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]" style={{ maxWidth: 460, padding: '3rem 2rem', borderRadius: 'var(--radius-xl)' }}>
           <div style={{
             width: 64, height: 64, margin: '0 auto 1.5rem',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -47,7 +47,7 @@ export default class ErrorBoundary extends Component {
             <AlertTriangle size={30} />
           </div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.75rem' }}>
-            Something went <span className="gradient-text">off course</span>
+            Something went <span className="bg-gradient-primary bg-clip-text text-transparent">off course</span>
           </h1>
           <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.9375rem', lineHeight: 1.6, marginBottom: '2rem' }}>
             An unexpected error interrupted this page. Your trips are safe — try reloading,
@@ -66,10 +66,10 @@ export default class ErrorBoundary extends Component {
           )}
 
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button onClick={this.handleReload} className="btn btn-primary">
+            <button onClick={this.handleReload} className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-sm px-5 py-2.5 rounded-xl border-none cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-gradient-primary bg-[length:200%_auto] text-white shadow-btn hover:bg-right hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(129,140,248,0.5)] active:translate-y-0 active:scale-[0.98] active:shadow-btn">
               <RotateCcw size={16} /> Reload page
             </button>
-            <a href="/dashboard" className="btn btn-secondary">
+            <a href="/dashboard" className="inline-flex items-center justify-center gap-2 font-sans font-semibold text-sm px-5 py-2.5 rounded-xl border border-solid border-border cursor-pointer transition-all duration-250 ease-out whitespace-nowrap text-decoration-none relative overflow-hidden bg-transparent text-text-primary hover:border-accent-primary hover:bg-[rgba(99,102,241,0.1)]">
               <Home size={16} /> Go to dashboard
             </a>
           </div>
